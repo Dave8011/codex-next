@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // ✅ COMPONENT: Create File or Folder
-function CreateFileOrFolder({ currentPath, onCreated }) {
+<CreateFileOrFolder currentPath={currentPath} onCreated={() => fetchFiles(currentPath)} />
   const [name, setName] = useState('');
   const [type, setType] = useState('file');
   const [content, setContent] = useState('');
