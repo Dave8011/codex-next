@@ -1,43 +1,79 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [filePath, setFilePath] = useState('');
-  const [fileContent, setFileContent] = useState('');
-  const [message, setMessage] = useState('');
+  const [files, setFiles] = useState([]);
+  const [currentPath, setCurrentPath] = useState('');
+  const [fileContent, setFileContent] = useState(null);
 
-  const handleSave = async () => {
-    const res = await fetch('/api/push-file', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: filePath, content: fileContent })
-    });
-
+  const fetchFiles = async (subpath = '') => {
+    const res = await fetch(`/api/files/list?subpath=${subpath}`);
     const data = await res.json();
-    setMessage(data.message || data.error);
+    setFiles(data.files);
+    setCurrentPath(subpath);
   };
 
+  const openFile = async (filename) => {
+    const res = await fetch(`/api/files/open?path=${currentPath}/${filename}`);
+    const data = await res.json();
+    setFileContent({ name: filename, content: data.content });
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
   return (
-    <div style={{ padding: 20 }}>
-      <h1>📁 Codex Editor (Next.js)</h1>
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">📁 Files in /Codex/codes/{currentPath}</h1>
 
-      <input
-        type="text"
-        value={filePath}
-        placeholder="e.g. Codes/test.html"
-        onChange={(e) => setFilePath(e.target.value)}
-        style={{ width: '100%', marginBottom: 10 }}
-      />
+      <ul className="space-y-1">
+        {files.map((file) => (
+          <li key={file.name}>
+            {file.type === 'folder' ? (
+              <button
+                className="text-blue-600 underline"
+                onClick={() => fetchFiles(`${currentPath}/${file.name}`)}
+              >
+                📂 {file.name}
+              </button>
+            ) : (
+              <button
+                className="text-green-700 underline"
+                onClick={() => openFile(file.name)}
+              >
+                📄 {file.name}
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
 
-      <textarea
-        value={fileContent}
-        onChange={(e) => setFileContent(e.target.value)}
-        rows={10}
-        style={{ width: '100%', marginBottom: 10 }}
-      />
-
-      <button onClick={handleSave}>💾 Save to GitHub</button>
-
-      {message && <p style={{ marginTop: 10 }}>{message}</p>}
+      {fileContent && (
+        <div className="mt-6 border p-4 rounded bg-gray-100">
+          <h2 className="font-semibold mb-2">Editing: {fileContent.name}</h2>
+          <textarea
+            className="w-full h-60 p-2 border"
+            value={fileContent.content}
+            onChange={(e) => setFileContent({ ...fileContent, content: e.target.value })}
+          />
+          <button
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
+            onClick={async () => {
+              await fetch('/api/files/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  path: `${currentPath}/${fileContent.name}`,
+                  content: fileContent.content,
+                }),
+              });
+              alert('✅ File saved!');
+            }}
+          >
+            Save
+          </button>
+        </div>
+      )}
     </div>
   );
 }
