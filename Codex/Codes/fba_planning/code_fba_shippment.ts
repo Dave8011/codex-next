@@ -1,7 +1,7 @@
 function 
  importAndFilterData() {
   try {
-    const showFormulas = false; // ✅ Toggle this to true when you want formulas
+    const showFormulas = false; // ✅-- Toggle this to true when you want formulas
 
     // 📄 Spreadsheet IDs
     const outputFileId = '1AUWumEalEdDyS5UTeWBvdMr5gQcr8Ke3YLwsGvtzEcs';
