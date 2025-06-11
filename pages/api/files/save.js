@@ -5,7 +5,7 @@ export default function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).end('Method Not Allowed');
 
     const { path: filePathRel, content } = req.body;
-    const fullPath = path.join(process.cwd(), 'Codex/codes', filePathRel);
+    const fullPath = path.join(process.cwd(), 'Codex/Codes', filePathRel);
 
     try {
         fs.writeFileSync(fullPath, content, 'utf8');
