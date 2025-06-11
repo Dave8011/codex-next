@@ -1,51 +1,22 @@
 import { useEffect, useState } from 'react';
 
-export default function Home() {
-  const [files, setFiles] = useState([]);
-  const [currentPath, setCurrentPath] = useState('');
-  const [fileContent, setFileContent] = useState(null);
-  const [saving, setSaving] = useState(false);
-
-  // Fetch list of files/folders for a given path
-  const fetchFiles = async (subpath = '') => {
-    const res = await fetch(`/api/files/list?subpath=${subpath}`);
-    const data = await res.json();
-    setFiles(data.files || []);
-    setCurrentPath(subpath);
-    setFileContent(null); // reset content when navigating
-  };
-
-  // Open and read file contents
-  const openFile = async (filename) => {
-    const fullPath = `${currentPath}/${filename}`;
-    const res = await fetch(`/api/files/open?path=${fullPath}`);
-    const data = await res.json();
-    setFileContent({ name: filename, content: data.content });
-  };
-
-    import { useState } from 'react';
-
-export default function CreateFileOrFolder({ currentPath, onCreated }) {
+// ✅ COMPONENT: Create File or Folder
+function CreateFileOrFolder({ currentPath, onCreated }) {
   const [name, setName] = useState('');
-  const [type, setType] = useState('file'); // "file" or "folder"
+  const [type, setType] = useState('file');
   const [content, setContent] = useState('');
 
   const handleCreate = async () => {
     const res = await fetch('/api/files/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        type,
-        subpath: currentPath,
-        content,
-      }),
+      body: JSON.stringify({ name, type, subpath: currentPath, content }),
     });
 
     const data = await res.json();
     if (res.ok) {
       alert('✅ Created successfully!');
-      onCreated(); // Refresh the file list
+      onCreated();
       setName('');
       setContent('');
     } else {
@@ -88,6 +59,33 @@ export default function CreateFileOrFolder({ currentPath, onCreated }) {
     </div>
   );
 }
+  
+// import { useEffect, useState } from 'react';
+
+export default function Home() {
+  const [files, setFiles] = useState([]);
+  const [currentPath, setCurrentPath] = useState('');
+  const [fileContent, setFileContent] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  // Fetch list of files/folders for a given path
+  const fetchFiles = async (subpath = '') => {
+    const res = await fetch(`/api/files/list?subpath=${subpath}`);
+    const data = await res.json();
+    setFiles(data.files || []);
+    setCurrentPath(subpath);
+    setFileContent(null); // reset content when navigating
+  };
+
+  // Open and read file contents
+  const openFile = async (filename) => {
+    const fullPath = `${currentPath}/${filename}`;
+    const res = await fetch(`/api/files/open?path=${fullPath}`);
+    const data = await res.json();
+    setFileContent({ name: filename, content: data.content });
+  };
+
+    import { useState } from 'react';
 
 
   
