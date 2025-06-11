@@ -1,31 +1,19 @@
-// pages/api/files/list.js
-import { Octokit } from "@octokit/rest";
+import fs from 'fs';
+import path from 'path';
 
-const octokit = new Octokit({ auth: process.env.MY_CODEX_TOKEN });
-
-const OWNER = "Dave8011";
-const REPO = "codex-next";
-const BASE_PATH = "Codex/Codes";
-
-export default async function handler(req, res) {
-  const subpath = req.query.subpath || "";
-  const path = subpath ? `${BASE_PATH}/${subpath}` : BASE_PATH;
+export default function handler(req, res) {
+  const { subpath = '' } = req.query;
+  const baseDir = path.join(process.cwd(), 'Codex', 'Codes');
+  const targetDir = path.join(baseDir, subpath);
 
   try {
-    const { data } = await octokit.repos.getContent({
-      owner: OWNER,
-      repo: REPO,
-      path,
-    });
-
-    const files = data.map((item) => ({
+    const items = fs.readdirSync(targetDir, { withFileTypes: true });
+    const files = items.map(item => ({
       name: item.name,
-      type: item.type, // "file" or "dir"
+      type: item.isDirectory() ? 'folder' : 'file',
     }));
-
     res.status(200).json({ files });
   } catch (err) {
-    console.error("List API Error:", err);
-    res.status(500).json({ error: "Cannot read directory", details: err.message });
+    res.status(500).json({ error: 'Failed to read directory', details: err.message });
   }
 }
