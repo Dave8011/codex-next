@@ -8,19 +8,27 @@ const repo = "codex-next";
 const basePath = "Codex/Codes";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
+  if (req.method !== "POST")
+    return res.status(405).end("Method Not Allowed");
 
   const { path, content } = req.body;
-  const filePath = `${basePath}${path}`;
+
+  if (!path || !content)
+    return res.status(400).json({ error: "Missing path or content" });
+
+  // Ensure filePath is safe and correctly formatted
+  const cleanPath = path.replace(/^\/+/, ""); // remove leading slashes
+  const filePath = `${basePath}/${cleanPath}`;
 
   try {
-    // Get current SHA
+    // Get current SHA of the existing file
     const { data: existing } = await octokit.repos.getContent({
       owner,
       repo,
       path: filePath,
     });
 
+    // Update file content using GitHub API
     const response = await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -32,6 +40,10 @@ export default async function handler(req, res) {
 
     res.status(200).json({ success: true, response });
   } catch (err) {
-    res.status(500).json({ error: "Failed to save file", details: err.message });
+    console.error("❌ Save API error:", err.response?.data || err.message);
+    res.status(500).json({
+      error: "Failed to save file",
+      details: err.message,
+    });
   }
 }
