@@ -3,28 +3,29 @@ import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({ auth: process.env.MY_CODEX_TOKEN });
 
-const owner = "Dave8011";
-const repo = "codex-next";
-const basePath = "Codex/Codes";
+const OWNER = "Dave8011";
+const REPO = "codex-next";
+const BASE_PATH = "Codex/Codes";
 
 export default async function handler(req, res) {
-  const { subpath = "" } = req.query;
-  const fullPath = `${basePath}${subpath ? "/" + subpath : ""}`;
+  const subpath = req.query.subpath || "";
+  const path = subpath ? `${BASE_PATH}/${subpath}` : BASE_PATH;
 
   try {
-    const response = await octokit.repos.getContent({
-      owner,
-      repo,
-      path: fullPath,
+    const { data } = await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path,
     });
 
-    const files = response.data.map((item) => ({
+    const files = data.map((item) => ({
       name: item.name,
-      type: item.type,
+      type: item.type, // "file" or "dir"
     }));
 
     res.status(200).json({ files });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to read directory", details: error.message });
+  } catch (err) {
+    console.error("List API Error:", err);
+    res.status(500).json({ error: "Cannot read directory", details: err.message });
   }
 }
