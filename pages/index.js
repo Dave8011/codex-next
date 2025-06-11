@@ -63,6 +63,7 @@ function getLanguage(filename = "") {
   }
 }
 
+
 // Helper to get parent directory
 function getParentPath(path) {
   if (!path) return "";
