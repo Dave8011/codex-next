@@ -1,3 +1,5 @@
+// ✅ Modernized File Browser UI with Night Toggle, Sidebar Tree, and GitHub Integration
+
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -7,31 +9,28 @@ export default function Home() {
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
   const [previewContent, setPreviewContent] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
 
-  // Fetch the list of files/folders
   const fetchFiles = async (subpath = '') => {
     const res = await fetch(`/api/files/list?subpath=${subpath}`);
     const data = await res.json();
-    setFiles(data.files);
+    setFiles(data.files || []);
     setCurrentPath(subpath);
     setFileContent(null);
   };
 
-  // Open file in editable mode
   const openFile = async (filename) => {
     const res = await fetch(`/api/files/open?path=${currentPath}/${filename}`);
     const data = await res.json();
     setFileContent({ name: filename, content: data.content });
   };
 
-  // Preview file in read-only modal
   const previewFile = async (filename) => {
     const res = await fetch(`/api/files/open?path=${currentPath}/${filename}`);
     const data = await res.json();
     setPreviewContent({ name: filename, content: data.content });
   };
 
-  // Create a folder via API (adds .gitkeep)
   const createFolder = async () => {
     if (!newFolderName.trim()) return;
     await fetch('/api/files/create-folder', {
@@ -43,22 +42,17 @@ export default function Home() {
     fetchFiles(currentPath);
   };
 
-  // Create empty file via GitHub API
   const createFile = async () => {
     if (!newFileName.trim()) return;
     await fetch('/api/files/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        path: `${currentPath}/${newFileName}`,
-        content: '',
-      }),
+      body: JSON.stringify({ path: `${currentPath}/${newFileName}`, content: '' }),
     });
     setNewFileName('');
     fetchFiles(currentPath);
   };
 
-  // Handle folder back navigation
   const goBack = () => {
     const parts = currentPath.split('/').filter(Boolean);
     parts.pop();
@@ -69,153 +63,113 @@ export default function Home() {
     fetchFiles();
   }, []);
 
+  const theme = darkMode ? 'dark' : 'light';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-6 font-sans text-gray-800">
-      <div className="max-w-5xl mx-auto">
-        {/* App Header */}
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-blue-700">🧠 Codex Browser</h1>
-          <p className="text-lg mt-2 text-gray-600">Explore, edit, and manage your files in style.</p>
-        </header>
-
-        {/* Back Button */}
-        {currentPath && (
-          <div className="mb-4">
-            <button
-              onClick={goBack}
-              className="text-sm text-blue-600 hover:underline mb-2"
-            >
-              ⬅️ Back
-            </button>
-            <p className="text-sm text-gray-500">Current path: <code>{`/Codex/Codes/${currentPath}`}</code></p>
-          </div>
-        )}
-
-        {/* File Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {/* Folder Creator */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="📁 New folder"
-              className="flex-1 p-2 border rounded"
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-            />
-            <button
-              onClick={createFolder}
-              className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700"
-            >
-              ➕
-            </button>
-          </div>
-
-          {/* File Creator */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="📝 New file (e.g. hello.js)"
-              className="flex-1 p-2 border rounded"
-              value={newFileName}
-              onChange={(e) => setNewFileName(e.target.value)}
-            />
-            <button
-              onClick={createFile}
-              className="bg-green-600 text-white px-4 rounded hover:bg-green-700"
-            >
-              ➕
-            </button>
-          </div>
+    <div className={theme + " min-h-screen flex bg-gray-900 text-white font-semibold text-lg"}>
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 p-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">📂 Files</h2>
+          <button
+            className="text-sm underline"
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            {darkMode ? '🌞' : '🌙'}
+          </button>
         </div>
-
-        {/* File List */}
-        <ul className="bg-white shadow-md rounded p-4 space-y-2">
-          {files?.length ? (
-            files.map((file) => (
-              <li key={file.name} className="flex justify-between items-center">
-                {file.type === 'folder' ? (
-                  <button
-                    className="text-blue-600 font-medium hover:underline"
-                    onClick={() => fetchFiles(`${currentPath}/${file.name}`)}
-                  >
-                    📁 {file.name}
+        {currentPath && (
+          <button onClick={goBack} className="underline text-white">⬅ Back</button>
+        )}
+        <ul className="space-y-2">
+          {files?.map((file) => (
+            <li key={file.name}>
+              {file.type === 'folder' ? (
+                <button onClick={() => fetchFiles(`${currentPath}/${file.name}`)} className="text-blue-400 underline">
+                  📁 {file.name}
+                </button>
+              ) : (
+                <div className="space-x-2">
+                  <button onClick={() => openFile(file.name)} className="underline text-green-400">
+                    ✏ {file.name}
                   </button>
-                ) : (
-                  <div className="flex gap-4">
-                    <button
-                      className="text-green-700 hover:underline"
-                      onClick={() => openFile(file.name)}
-                    >
-                      ✏️ Edit: {file.name}
-                    </button>
-                    <button
-                      className="text-gray-500 hover:underline"
-                      onClick={() => previewFile(file.name)}
-                    >
-                      👁️ Preview
-                    </button>
-                  </div>
-                )}
-              </li>
-            ))
-          ) : (
-            <li className="text-gray-400">No files found</li>
-          )}
+                  <button onClick={() => previewFile(file.name)} className="underline text-gray-400">
+                    👁
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
 
-        {/* Preview Modal */}
-        {previewContent && (
-          <div className="fixed inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white max-w-2xl w-full rounded-lg shadow-lg p-6 relative">
-              <h2 className="text-xl font-semibold mb-4">👁️ Preview: {previewContent.name}</h2>
-              <pre className="bg-gray-100 p-4 rounded overflow-auto max-h-96 text-sm whitespace-pre-wrap">
-                {previewContent.content}
-              </pre>
-              <button
-                onClick={() => setPreviewContent(null)}
-                className="absolute top-2 right-4 text-gray-400 hover:text-red-500"
-              >
-                ✖️
-              </button>
-            </div>
-          </div>
-        )}
+        {/* New Folder */}
+        <div className="pt-6">
+          <input
+            value={newFolderName}
+            onChange={(e) => setNewFolderName(e.target.value)}
+            placeholder="New folder"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <button onClick={createFolder} className="w-full mt-2 bg-transparent border border-white text-white py-1 rounded">
+            ➕ Create Folder
+          </button>
+        </div>
 
-        {/* Editor */}
-        {fileContent && (
-          <div className="mt-8 bg-white p-6 rounded shadow">
-            <h2 className="text-lg font-semibold mb-2">📝 Editing: {fileContent.name}</h2>
+        {/* New File */}
+        <div className="pt-4">
+          <input
+            value={newFileName}
+            onChange={(e) => setNewFileName(e.target.value)}
+            placeholder="New file.js"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <button onClick={createFile} className="w-full mt-2 bg-transparent border border-white text-white py-1 rounded">
+            ➕ Create File
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-10">
+        {fileContent ? (
+          <div>
+            <h1 className="text-2xl mb-4">Editing: {fileContent.name}</h1>
             <textarea
-              className="w-full h-64 p-3 border rounded font-mono text-sm"
               value={fileContent.content}
-              onChange={(e) =>
-                setFileContent({ ...fileContent, content: e.target.value })
-              }
+              onChange={(e) => setFileContent({ ...fileContent, content: e.target.value })}
+              className="w-full h-96 p-4 text-white bg-[#334155] rounded shadow-md font-mono"
             />
             <button
-              className="mt-4 px-6 py-2 bg-blue-700 text-white rounded hover:bg-blue-800"
               onClick={async () => {
                 const res = await fetch('/api/files/save', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    path: `${currentPath}/${fileContent.name}`,
-                    content: fileContent.content,
-                  }),
+                  body: JSON.stringify({ path: `${currentPath}/${fileContent.name}`, content: fileContent.content }),
                 });
-
-                if (res.ok) {
-                  alert('✅ File saved successfully!');
-                } else {
-                  alert('❌ Save failed.');
-                }
+                alert(res.ok ? '✅ Saved!' : '❌ Save failed.');
               }}
+              className="mt-4 bg-transparent border border-white text-white py-2 px-4 rounded"
             >
-              💾 Save Changes
+              💾 Save
             </button>
           </div>
+        ) : (
+          <h1 className="text-center text-3xl opacity-50">📑 Select a file to begin editing</h1>
         )}
-      </div>
+
+        {/* Preview Modal */}
+        {previewContent && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+            <div className="bg-gray-800 p-6 rounded-lg w-full max-w-2xl relative">
+              <button onClick={() => setPreviewContent(null)} className="absolute top-2 right-4 text-white">✖</button>
+              <h2 className="text-xl mb-2">Preview: {previewContent.name}</h2>
+              <pre className="bg-[#334155] p-4 rounded overflow-auto max-h-[70vh] text-white text-sm">
+                {previewContent.content}
+              </pre>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
