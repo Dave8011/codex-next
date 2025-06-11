@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 
-// ✅ COMPONENT: Create File or Folder
-<CreateFileOrFolder currentPath={currentPath} onCreated={() => fetchFiles(currentPath)} />
+// --- CreateFileOrFolder Component ---
+function CreateFileOrFolder({ currentPath, onCreated }) {
   const [name, setName] = useState('');
   const [type, setType] = useState('file');
   const [content, setContent] = useState('');
 
   const handleCreate = async () => {
+    if (!name.trim()) {
+      alert('❌ Name is required.');
+      return;
+    }
     const res = await fetch('/api/files/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -26,7 +30,9 @@ import { useEffect, useState } from 'react';
 
   return (
     <div className="p-4 border rounded mb-4 bg-slate-800 text-white">
-      <h2 className="text-lg font-semibold mb-2">📦 Create New {type === 'file' ? 'File' : 'Folder'}</h2>
+      <h2 className="text-lg font-semibold mb-2">
+        📦 Create New {type === 'file' ? 'File' : 'Folder'}
+      </h2>
       <input
         type="text"
         placeholder="Enter name (e.g. newfile.js)"
@@ -59,8 +65,6 @@ import { useEffect, useState } from 'react';
     </div>
   );
 }
-  
-// import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [files, setFiles] = useState([]);
@@ -70,7 +74,7 @@ export default function Home() {
 
   // Fetch list of files/folders for a given path
   const fetchFiles = async (subpath = '') => {
-    const res = await fetch(`/api/files/list?subpath=${subpath}`);
+    const res = await fetch(`/api/files/list?subpath=${encodeURIComponent(subpath)}`);
     const data = await res.json();
     setFiles(data.files || []);
     setCurrentPath(subpath);
@@ -79,27 +83,23 @@ export default function Home() {
 
   // Open and read file contents
   const openFile = async (filename) => {
-    const fullPath = `${currentPath}/${filename}`;
-    const res = await fetch(`/api/files/open?path=${fullPath}`);
+    const fullPath = [currentPath, filename].filter(Boolean).join('/');
+    const res = await fetch(`/api/files/open?path=${encodeURIComponent(fullPath)}`);
     const data = await res.json();
     setFileContent({ name: filename, content: data.content });
   };
 
-    // import { useState } from 'react';
-
-
-  
-  // Initial fetch on page load
   useEffect(() => {
     fetchFiles();
+    // eslint-disable-next-line
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-800 text-white font-medium">
-      
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 border-r border-slate-700 p-4">
         <h1 className="text-2xl font-bold mb-4 text-center">📁 Codex Files</h1>
+        <CreateFileOrFolder currentPath={currentPath} onCreated={() => fetchFiles(currentPath)} />
         <ul className="space-y-2">
           {files.length > 0 ? (
             files.map((file) => (
@@ -107,7 +107,9 @@ export default function Home() {
                 {file.type === 'folder' ? (
                   <button
                     className="w-full text-left text-blue-300 hover:underline"
-onClick={() => fetchFiles(`${currentPath}/${file.name}`.replace(/^\/+/, ''))}
+                    onClick={() =>
+                      fetchFiles([currentPath, file.name].filter(Boolean).join('/'))
+                    }
                   >
                     📂 {file.name}
                   </button>
@@ -153,11 +155,12 @@ onClick={() => fetchFiles(`${currentPath}/${file.name}`.replace(/^\/+/, ''))}
                 className="px-4 py-2 bg-transparent border border-green-400 text-green-300 hover:bg-green-400 hover:text-slate-900 rounded transition"
                 onClick={async () => {
                   setSaving(true);
+                  const fullPath = [currentPath, fileContent.name].filter(Boolean).join('/');
                   const res = await fetch('/api/files/save', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                      path: `${currentPath}/${fileContent.name}`,
+                      path: fullPath,
                       content: fileContent.content,
                     }),
                   });
