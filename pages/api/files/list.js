@@ -1,19 +1,35 @@
-import fs from 'fs';
-import path from 'path';
+// pages/api/files/list.js
+import { Octokit } from "@octokit/rest";
 
-export default function handler(req, res) {
-  const { subpath = '' } = req.query;
-  const baseDir = path.join(process.cwd(), 'Codex', 'Codes');
-  const targetDir = path.join(baseDir, subpath);
+const octokit = new Octokit({ auth: process.env.MY_CODEX_TOKEN });
+
+const OWNER = "Dave8011";
+const REPO = "codex-next";
+const BASE_PATH = "Codex/Codes";
+
+export default async function handler(req, res) {
+  const subpath = req.query.subpath || "";
+  const path = subpath ? `${BASE_PATH}/${subpath}` : BASE_PATH;
 
   try {
-    const items = fs.readdirSync(targetDir, { withFileTypes: true });
-    const files = items.map(item => ({
-      name: item.name,
-      type: item.isDirectory() ? 'folder' : 'file',
-    }));
+    const { data } = await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path,
+    });
+
+    const files = Array.isArray(data)
+      ? data.map((item) => ({
+          name: item.name,
+          type: item.type === "dir" ? "folder" : "file",
+        }))
+      : [];
+
     res.status(200).json({ files });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to read directory', details: err.message });
+    console.error("GitHub API Error:", err.response?.data || err.message);
+    res
+      .status(500)
+      .json({ error: "Cannot read directory", details: err.message });
   }
 }
