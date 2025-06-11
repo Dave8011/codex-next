@@ -23,6 +23,74 @@ export default function Home() {
     setFileContent({ name: filename, content: data.content });
   };
 
+    import { useState } from 'react';
+
+export default function CreateFileOrFolder({ currentPath, onCreated }) {
+  const [name, setName] = useState('');
+  const [type, setType] = useState('file'); // "file" or "folder"
+  const [content, setContent] = useState('');
+
+  const handleCreate = async () => {
+    const res = await fetch('/api/files/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        type,
+        subpath: currentPath,
+        content,
+      }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert('✅ Created successfully!');
+      onCreated(); // Refresh the file list
+      setName('');
+      setContent('');
+    } else {
+      alert(`❌ Failed: ${data.error}`);
+    }
+  };
+
+  return (
+    <div className="p-4 border rounded mb-4 bg-slate-800 text-white">
+      <h2 className="text-lg font-semibold mb-2">📦 Create New {type === 'file' ? 'File' : 'Folder'}</h2>
+      <input
+        type="text"
+        placeholder="Enter name (e.g. newfile.js)"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="w-full p-2 mb-2 rounded bg-slate-700 text-white"
+      />
+      <select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        className="w-full p-2 mb-2 rounded bg-slate-700 text-white"
+      >
+        <option value="file">File</option>
+        <option value="folder">Folder</option>
+      </select>
+      {type === 'file' && (
+        <textarea
+          placeholder="Optional content..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full p-2 h-24 mb-2 rounded bg-slate-700 text-white"
+        />
+      )}
+      <button
+        onClick={handleCreate}
+        className="bg-transparent border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition"
+      >
+        ➕ Create
+      </button>
+    </div>
+  );
+}
+
+
+  
   // Initial fetch on page load
   useEffect(() => {
     fetchFiles();
