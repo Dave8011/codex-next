@@ -1,4 +1,3 @@
-// pages/api/files/save.js
 import { Octokit } from '@octokit/rest';
 
 export default async function handler(req, res) {
@@ -18,19 +17,20 @@ export default async function handler(req, res) {
   const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
   try {
-    // Get file SHA (required to update)
+    const fullPath = `Codex/Codes${filePath}`;
+
+    // Get existing file SHA
     const { data: existingFile } = await octokit.repos.getContent({
       owner: OWNER,
       repo: REPO,
-      path: `Codex/Codes${filePath}`,
+      path: fullPath,
       ref: BRANCH,
     });
 
-    // Update file with new content
     await octokit.repos.createOrUpdateFileContents({
       owner: OWNER,
       repo: REPO,
-      path: `Codex/Codes${filePath}`,
+      path: fullPath,
       message: `Update ${filePath}`,
       content: Buffer.from(content).toString('base64'),
       sha: existingFile.sha,
@@ -38,7 +38,12 @@ export default async function handler(req, res) {
     });
 
     res.status(200).json({ message: 'File updated successfully!' });
+
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update file', details: err.message });
+    console.error('Save failed:', err);
+    res.status(500).json({
+      error: 'Failed to update file',
+      details: err.message || 'Unknown error',
+    });
   }
 }
