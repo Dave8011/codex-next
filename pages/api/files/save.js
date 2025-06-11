@@ -1,44 +1,54 @@
-// pages/api/files/save.js
-import { Octokit } from '@octokit/rest';
+import { Octokit } from "@octokit/rest";
+
+const octokit = new Octokit({
+  auth: process.env.MY_CODEX_TOKEN,
+});
+
+const owner = "Dave8011";
+const repo = "codex-next";
+const branch = "main";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const { path: filePath, content } = req.body;
-
-  if (!filePath || !content) {
-    return res.status(400).json({ error: 'Missing file path or content' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Only POST allowed" });
   }
 
-  const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const REPO = 'codex-next';
-  const OWNER = 'Dave8011';
-  const BRANCH = 'main';
+  const { path, content } = req.body;
+  if (!path || !content) {
+    return res.status(400).json({ error: "Missing path or content" });
+  }
 
-  const octokit = new Octokit({ auth: GITHUB_TOKEN });
+  const filePath = `Codex/Codes${path.startsWith("/") ? path : `/${path}`}`;
 
   try {
-    // Get file SHA (required to update)
-    const { data: existingFile } = await octokit.repos.getContent({
-      owner: OWNER,
-      repo: REPO,
-      path: `Codex/Codes${filePath}`,
-      ref: BRANCH,
-    });
+    // 1. Get the current file SHA (needed to update the file)
+    let sha = null;
+    try {
+      const { data: fileData } = await octokit.repos.getContent({
+        owner,
+        repo,
+        path: filePath,
+        ref: branch,
+      });
+      sha = fileData.sha;
+    } catch (err) {
+      if (err.status !== 404) throw err; // Ignore file not found (it's a new file)
+    }
 
-    // Update file with new content
+    // 2. Create or update the file
     await octokit.repos.createOrUpdateFileContents({
-      owner: OWNER,
-      repo: REPO,
-      path: `Codex/Codes${filePath}`,
+      owner,
+      repo,
+      path: filePath,
       message: `Update ${filePath}`,
-      content: Buffer.from(content).toString('base64'),
-      sha: existingFile.sha,
-      branch: BRANCH,
+      content: Buffer.from(content).toString("base64"),
+      sha: sha || undefined,
+      branch,
     });
 
-    res.status(200).json({ message: 'File updated successfully!' });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update file', details: err.message });
+    return res.status(200).json({ message: "✅ File saved successfully" });
+  } catch (error) {
+    console.error("GitHub Save Error:", error);
+    return res.status(500).json({ error: "❌ Failed to save file", details: error.message });
   }
 }
