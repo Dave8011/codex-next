@@ -1,24 +1,44 @@
 // pages/api/files/save.js
-
-import fs from 'fs';
-import path from 'path';
+import { Octokit } from '@octokit/rest';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { path: filePath, content } = req.body;
 
-  if (!filePath || typeof content !== 'string') {
-    return res.status(400).json({ error: 'Invalid input' });
+  if (!filePath || !content) {
+    return res.status(400).json({ error: 'Missing file path or content' });
   }
 
+  const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+  const REPO = 'codex-next';
+  const OWNER = 'Dave8011';
+  const BRANCH = 'main';
+
+  const octokit = new Octokit({ auth: GITHUB_TOKEN });
+
   try {
-    const fullPath = path.join(process.cwd(), 'Codex', 'Codes', filePath);
-    fs.writeFileSync(fullPath, content, 'utf8');
-    res.status(200).json({ message: 'File saved successfully' });
+    // Get file SHA (required to update)
+    const { data: existingFile } = await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path: `Codex/Codes${filePath}`,
+      ref: BRANCH,
+    });
+
+    // Update file with new content
+    await octokit.repos.createOrUpdateFileContents({
+      owner: OWNER,
+      repo: REPO,
+      path: `Codex/Codes${filePath}`,
+      message: `Update ${filePath}`,
+      content: Buffer.from(content).toString('base64'),
+      sha: existingFile.sha,
+      branch: BRANCH,
+    });
+
+    res.status(200).json({ message: 'File updated successfully!' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to save file', details: err.message });
+    res.status(500).json({ error: 'Failed to update file', details: err.message });
   }
 }
