@@ -27,8 +27,9 @@ export default function Home() {
       <h1 className="text-xl font-bold mb-4">📁 Files in /Codex/codes/{currentPath}</h1>
 
       <ul className="space-y-1">
-        {files.map((file) => (
-          <li key={file.name}>
+        {files?.map((file) => (
+    <li key={file.name}>{file.name}</li>
+  )) || <p>No files found or failed to load.</p>}
             {file.type === 'folder' ? (
               <button
                 className="text-blue-600 underline"
