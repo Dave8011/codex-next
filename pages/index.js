@@ -756,11 +756,7 @@ export default function Index() {
           .cf-sidebar-title {
             margin: 20px 0 14px 18px;
           }
-          .cf-editor-card {
-            max-width: 99vw;
-            margin: 26px 0 0 0;
-            border-radius: 1.3em;
-          }
+          
         }
         @media (max-width: 600px) {
           .cf-header { font-size: 1em; min-height: 48px; height: 48px; }
