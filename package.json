@@ -1,7 +1,8 @@
 {
   "name": "codex-next",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "A unique code editor app with Monaco Editor and Next.js",
+  "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,12 +10,26 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.3",
-    "@octokit/rest": "^20.0.0",
-    "@monaco-editor/react": "^4.7.0"
-
-
-  }
+    "@monaco-editor/react": "^4.7.0",
+    "next": "^13.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.4"
+  },
+  "keywords": [
+    "nextjs",
+    "monaco-editor",
+    "react",
+    "code",
+    "unique"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dave8011/codex-next.git"
+  },
+  "author": "Dave8011",
+  "license": "MIT"
 }
