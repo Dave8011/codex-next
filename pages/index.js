@@ -66,13 +66,14 @@ export default function Home() {
             className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             onClick={async () => {
               const res = await fetch('/api/files/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  path: `${currentPath}/${fileContent.name}`,
-                  content: fileContent.content,
-                }),
-              });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    path: `${currentPath}/${fileContent.name}`,
+    content: fileContent.content,
+  }),
+});
+
 
               if (res.ok) {
                 alert('✅ File saved Nice!');
