@@ -41,7 +41,7 @@ export default function Home() {
                 {file.type === 'folder' ? (
                   <button
                     className="w-full text-left text-blue-300 hover:underline"
-                    onClick={() => fetchFiles(`${currentPath}/${file.name}`)}
+onClick={() => fetchFiles(`${currentPath}/${file.name}`.replace(/^\/+/, ''))}
                   >
                     📂 {file.name}
                   </button>
