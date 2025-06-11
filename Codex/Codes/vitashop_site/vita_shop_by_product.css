@@ -1,0 +1,94 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify Collections Showcase</title>
+<style>
+  /* Style for the collection container */
+  .collection-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px; /* Adjust gap to fit all items in one line */
+    padding: 20px; /* Add some padding around the container */
+    background-color: #ffffff;
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
+  }
+
+  /* Style for individual collection items */
+  .collection-item {
+    text-align: center;
+    flex-shrink: 0; /* Prevent items from shrinking */
+  }
+
+  /* Style for collection item images */
+  .collection-image {
+    width: 100px; /* Adjust image width */
+    height: 100px; /* Adjust image height */
+    object-fit: cover;
+    border-radius: 5%; /* Slightly rounded corners */
+    margin-bottom: 10px;
+    transition: transform 0.3s ease-in-out; /* Smooth transition for the zoom effect */
+  }
+
+  /* Zoom-in effect on hover */
+  .collection-item:hover .collection-image {
+    transform: scale(1.2); /* Adjust the scale as needed */
+  }
+
+  /* Style for collection item names */
+  .collection-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+</style>
+
+<!-- Collection container -->
+<div class="collection-container">
+  <!-- Collection item 1: CoQ10 -->
+  <a href="https://vitashop.in/collections/CoQ10" class="collection-item item1">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/CoQ10.jpg?v=1717591990" alt="CoQ10" class="collection-image">
+    <div class="collection-name">CoQ10</div>
+  </a>
+
+  <!-- Collection item 2: Vitamin D3 -->
+  <a href="https://vitashop.in/collections/Vitamin%20D3" class="collection-item item2">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Vitamin_D3.jpg?v=1717591990" alt="Vitamin D3" class="collection-image">
+    <div class="collection-name">Vitamin D3</div>
+  </a>
+
+  <!-- Collection item 3: Prebiotic + Probiotic -->
+  <a href="https://vitashop.in/collections/Prebiotic%20+%20Probiotic" class="collection-item item3">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Prebiotic_Probiotic.jpg?v=1717591990" alt="Prebiotic + Probiotic" class="collection-image">
+    <div class="collection-name">Prebiotic + Probiotic</div>
+  </a>
+
+  <!-- Collection item 4: Amino Acid -->
+  <a href="https://vitashop.in/collections/Amino%20Acid" class="collection-item item4">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Amino_Acid.jpg?v=1717591991" alt="Amino Acid" class="collection-image">
+    <div class="collection-name">Amino Acid</div>
+  </a>
+
+  <!-- Collection item 5: Collagen -->
+  <a href="https://vitashop.in/collections/Collagen" class="collection-item item5">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Collagen.jpg?v=1717591990" alt="Collagen" class="collection-image">
+    <div class="collection-name">Collagen</div>
+  </a>
+
+  <!-- Collection item 6: Curcumin -->
+  <a href="https://vitashop.in/collections/Curcumin" class="collection-item item6">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Curcumin.jpg?v=1717591990" alt="Curcumin" class="collection-image">
+    <div class="collection-name">Curcumin</div>
+  </a>
+
+  <!-- Collection item 7: Omega -->
+  <a href="https://vitashop.in/collections/Omega" class="collection-item item7">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Omega.jpg?v=1717591990" alt="Omega" class="collection-image">
+    <div class="collection-name">Omega</div>
+  </a>
+
+  <!-- Collection item 8: Permanent Hair Color 
+  <a href="https://vitashop.in/collections/Permanent%20Hair%20Color" class="collection-item item8">
+    <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Permanent_Hair_Color.jpg?v=1717591991" alt="Permanent Hair Color" class="collection-image">
+    <div class="collection-name">Permanent Hair Color</div>
+  </a> -->
+</div>

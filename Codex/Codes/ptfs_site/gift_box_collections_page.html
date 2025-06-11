@@ -1,0 +1,161 @@
+<style>
+    body {
+    .filter-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .filter-btn {
+        background-color: #98e59c;
+        color: black;
+        border: none;
+        padding: 15px 20px;
+        margin-right: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 30px;
+    }
+    .filter-btn.active {
+        background-color: #98c1a2;
+        color: white;
+    }
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 10px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 5px;
+    }
+    .product-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        text-align: center;
+        padding: 10px;
+        color: black;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.1);
+    }
+    .product-card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    .product-card h3 {
+        font-size: 15px;
+        margin: 5px 0;
+        font-weight: bold;
+    }
+    .product-mrp {
+        font-size: 14px;
+        text-decoration: line-through;
+        color: #a9a9a9;
+        margin: 0%;
+        margin-top: -5%;
+    }
+    .product-price {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ff5722;
+        margin: 0%;
+    }
+    .discount-percentage {
+        font-size: 14px;
+        color: #ff5722;
+        font-weight: bold;
+    }
+    h5 {
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: underline;
+        margin: 10px 0 5px;
+    }
+    .product-card li{
+        font-size: 15px;
+        font-weight: 250;
+        
+    }}
+</style>
+
+<div class="filter-container">
+    <button class="filter-btn active" onclick="showCollection('gift-hampers')">3 Glass Jar Gift Box</button>
+    <button class="filter-btn " onclick="showCollection('4-gift-box')">4 Glass Jar Gift Box</button>
+    
+</div>
+
+<!-- Collection Containers -->
+<div id="gift-hampers" class="product-grid">
+    {% for product in collections['gift-hampers'].products %}
+        <a href="{{ product.url }}" class="product-card">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}">
+            <h3>{{ product.metafields.custom.gift_box_name }}</h3>
+            <h5>Box Items:</h5>
+            {% if product.metafields.custom.box_item_list %}
+                {% assign items = product.metafields.custom.box_item_list | split: ", " %}
+                <ul>
+                    {% for item in items %}
+                     <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No items included in this box.</p>
+            {% endif %}
+            <p class="product-mrp">MRP: {{ product.compare_at_price | money }}</p>
+            <p class="product-price">Price: {{ product.price | money }}</p>
+            {% if product.compare_at_price and product.compare_at_price > product.price %}
+                {% assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+                <p class="discount-percentage">Save {{ discount | round: 0 }}% off!</p>
+            {% endif %}
+        </a>
+    {% endfor %}
+</div>
+<div id="4-gift-box" class="product-grid" >
+    {% for product in collections['4-gift-box'].products %}
+        <a href="{{ product.url }}" class="product-card">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}">
+            <h3>{{ product.metafields.custom.gift_box_name }}</h3>
+            <h5>Box Items:</h5>
+            {% if product.metafields.custom.box_item_list %}
+                {% assign items = product.metafields.custom.box_item_list | split: ", " %}
+                <ul>
+                    {% for item in items %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No items included in this box.</p>
+            {% endif %}
+            <p class="product-mrp">MRP: {{ product.compare_at_price | money }}</p>
+            <p class="product-price">Price: {{ product.price | money }}</p>
+            {% if product.compare_at_price and product.compare_at_price > product.price %}
+                {% assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+                <p class="discount-percentage">Save {{ discount | round: 0 }}% off!</p>
+            {% endif %}
+        </a>
+    {% endfor %}
+</div>
+
+<script>
+    function showCollection(collectionId) {
+        // Reset active button
+        document.querySelectorAll('.filter-btn').forEach(button => button.classList.remove('active'));
+        
+        // Set the active class to the clicked button
+        document.querySelector(`.filter-btn[onclick="showCollection('${collectionId}')"]`).classList.add('active');
+
+        // Hide all collections
+        document.querySelectorAll('.product-grid').forEach(collection => collection.style.display = 'none');
+
+        // Show selected collection
+        document.getElementById(collectionId).style.display = 'grid';
+    }
+
+    // Load default collection on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        showCollection('gift-hampers');
+    });
+</script>

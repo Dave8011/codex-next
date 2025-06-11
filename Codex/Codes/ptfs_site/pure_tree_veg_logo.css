@@ -1,0 +1,9 @@
+<div style="padding-bottom: 1px;">
+  (selling price inclusive of all taxes)
+</div>
+<div style="display: flex; align-items: center;">
+  <div style="border: 2px solid green; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+    <div style="width: 10px; height: 10px; background-color: green; border-radius: 50%;"></div>
+  </div>
+  <span>This is a Vegetarian product.</span>
+</div>

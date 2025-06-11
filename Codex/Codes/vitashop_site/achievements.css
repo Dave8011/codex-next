@@ -1,0 +1,68 @@
+<!-- <div style="padding: 10px; max-width: flax ; margin: 0 auto;">
+ -->  <!-- H1 Heading -->
+ <!--  <h1 style="font-size: 3em; font-weight: bold; text-align: center; font-family: 'Clutch Sans', sans-serif; color: #889749;">Naturtint</h1>
+ -->
+  <!-- Container -->
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
+    <!-- Left Side -->
+    <div class="left-side" style="flex: 1; text-align: center; margin-bottom: 20px; min-width: 300px">
+      <p style="font-size: 2em; font-weight: bold; margin-top: 5px; font-family: 'Clutch Sans', sans-serif; color: #014d44;">International Awards</p>
+      <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_73.png?v=1723437624" alt="Achievements">
+    </div>
+
+    <!-- Right Side -->
+    <div class="right-side" style="flex: 1.5; padding-left: 20px; text-align: center;">
+      <p style="font-size: 2em; font-weight: bold; margin-bottom: 15px; font-family: 'Clutch Sans', sans-serif; color: #014d44;">Hair Coloring Best Valued by Consumers in 2018</p>
+      <p style="font-size: 1em; line-height: 1.5; margin-bottom: 15px; font-family: 'Clutch Sans', sans-serif; color: #014d44;">
+        <strong>*NATURTINT</strong> Obtains <strong>NUMBER 1</strong> in the coloration study carried out by the OCU.
+      </p>
+      <p style="font-size: 0.9em; line-height: 1.5; margin-bottom: 15px; font-family: 'Clutch Sans', sans-serif; color: #014d44;">
+        <strong>NATURTINT® NUMBER 1</strong> “The 10 Best Hair Dyes” from Wiki.ezvid.com
+      </p>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_200_x_500_px.png?v=1723440588" alt="Best of Analysis" style="max-width: 150px; height: 150px; margin-right: 10px;">
+        <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_61.png?v=1721969433" alt="Amazon" style="max-width: 150px; height: auto; margin-right: 10px;">
+      </div>
+      <p style="font-size: 0.8em; font-weight: bold; margin-top: 20px; font-family: 'Clutch Sans', sans-serif; color: #014d44;">
+        The best valued coloring for American consumers in 2017, 2018, 2019, and 2020 on Amazon!!!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Media Queries for Responsive Design -->
+<style>
+  /* For screens 760px and smaller */
+  @media (max-width: 760px) {
+    .left-side, .right-side {
+      flex: 1 1 100%;
+      padding-left: 0;
+
+    }
+
+    .right-side {
+      text-align: center;
+    }
+  }
+
+  /* For screens larger than 760px */
+  @media (min-width: 761px) {
+    .container {
+      display: flex;
+      justify-content: space-between;
+
+    }
+    
+    .left-side {
+      flex: 1;
+      text-align: center;
+      float: left;
+    }
+    
+    .right-side {
+      flex: 1.5;
+      padding-left: 20px;
+      text-align: left;
+    }
+  }
+</style>

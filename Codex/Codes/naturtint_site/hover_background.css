@@ -1,0 +1,15 @@
+@media (min-width: 768px) {
+  .hdt-collection-style1 .hdt-collection-title {
+    line-height: 54px; /* height: 54px; min-width: 150px; */
+  }
+  .hdt-collection-style1 .hdt-collection-title:hover {
+    color: white;
+    text-shadow: 2px 2px 4px #14b81d; /* height: 64px; min-width: 0px; */
+  }
+}
+@media (min-width: 1150px) {
+  .hdt-collection-style1 .hdt-collection-title {
+    line-height: 64px;
+    background-color: transparent;
+  }
+}

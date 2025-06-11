@@ -1,0 +1,79 @@
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopify Collections Showcase</title>
+  <style>
+    /* Style for the collection container */
+    .collection-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    /* Style for individual collection items */
+    .collection-item {
+      text-align: center;
+    }
+
+    /* Style for collection item images */
+    .collection-image {
+      width: 150px; /* Adjust image width as needed */
+      height: 150px; /* Adjust image height as needed */
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    /* Style for collection item names */
+    .collection-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+
+
+  <!-- Collection container -->
+  <div class="collection-container">
+    <!-- Collection item 1: NATURAL -->
+    <a href="https://vitashop.in/collections/nordic-naturals">
+      <div class="collection-item">
+        <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/Fast_Delivery_5.png?v=1706863940" alt="Nordic Naturals" class="collection-image">
+        <div class="collection-name">NATURAL</div>
+      </div>
+    </a>
+
+    <!-- Collection item 2: GOLDEN -->
+    <a href="https://vitashop.in/collections/naturtint">
+      <div class="collection-item">
+        <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/386180647_3308874719410466_6100033850944120549_n.jpg?v=1701427837" alt="Naturtint" class="collection-image">
+        <div class="collection-name">GOLDEN</div>
+      </div>
+    </a>
+    
+    <!-- Collection item 3: CHOCOLATE CHESTNUTS -->
+    <a href="https://vitashop.in/collections/doctors-best">
+      <div class="collection-item">
+        <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/Fast_Delivery_7.png?v=1706864233" alt="Doctor's Best" class="collection-image">
+        <div class="collection-name">CHOCOLATE CHESTNUTS</div>
+      </div>
+    </a>
+
+    <!-- Collection item 4: MAHOGANY -->
+    <a href="https://vitashop.in/collections/jarrow-formula">
+      <div class="collection-item">
+        <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/Fast_Delivery_3.png?v=1706864263" alt="Jarrow Formulas" class="collection-image">
+        <div class="collection-name">MAHOGANY</div>
+      </div>
+    </a>
+
+    <!-- Collection item 5: COPPER -->
+    <a href="https://vitashop.in/collections/nutricost">
+      <div class="collection-item">
+        <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/d215d01f-6223-4dac-b6c0-015b02a98e65.__CR0_0_600_180_PT0_SX600_V1.jpg?v=1706864379" alt="Nutricost" class="collection-image">
+        <div class="collection-name">COPPER</div>
+      </div>
+    </a>
+  </div>

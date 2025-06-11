@@ -1,0 +1,140 @@
+{% if product.type == 'Hairline Powder' %}
+  <div class="custom-variation-desktop">
+    <div id="shade-name-placeholder-boldify">Choose Your Shade</div>
+    <div class="shade-container">
+      <div class="shade-row">
+        <div class="shade BLACK" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-black" data-shade-name="BLACK">
+          <div class="shade-label">BLACK<br/>4g</div>
+        </div>
+        <div class="shade DARK-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-dark-brown" data-shade-name="DARK BROWN">
+          <div class="shade-label">DARK BROWN<br/>4g</div>
+        </div>
+        <div class="shade MEDIUM-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-medium-brown" data-shade-name="MEDIUM BROWN">
+          <div class="shade-label">MEDIUM BROWN<br/>4g</div>
+        </div>
+        <div class="shade LIGHT-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-light-brown" data-shade-name="LIGHT BROWN">
+          <div class="shade-label">LIGHT BROWN<br/>4g</div>
+            </div>
+         </div>
+    </div>
+  </div>
+
+  <div class="custom-variation-mobile">
+    <div id="shade-name-placeholder-boldify">Choose Your Shade</div>
+    <div class="shade-container">
+      <div class="shade-row">
+        <div class="shade BLACK" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-black" data-shade-name="BLACK">
+          <div class="shade-label">BLACK<br/>4g</div>
+        </div>
+        <div class="shade DARK-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-dark-brown" data-shade-name="DARK BROWN">
+          <div class="shade-label">DARK BROWN<br/>4g</div>
+        </div>
+        <div class="shade MEDIUM-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-medium-brown" data-shade-name="MEDIUM BROWN">
+          <div class="shade-label">MEDIUM BROWN<br/>4g</div>
+        </div>
+        <div class="shade LIGHT-BROWN" data-shade-handle="boldify-hairline-powder-hair-toppers-for-women-men-root-cover-up-stain-proof-48-hour-formula-light-brown" data-shade-name="LIGHT BROWN">
+          <div class="shade-label">LIGHT BROWN<br/>4g</div>
+            </div>
+         </div>
+    </div>
+  </div>
+
+
+      
+{% endif %}
+
+<style>
+  .custom-variation-mobile{
+    display: block;
+  }
+  .custom-variation-desktop{
+    display: none;
+  }
+  @media only screen and (min-width: 768px) {
+
+  .custom-variation-mobile{
+    display: none;
+  }
+  .custom-variation-desktop{
+    display: block;
+  }
+}
+  .custom-variation {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px 0;
+    text-align: center;
+  }
+
+  #shade-name-placeholder-boldify {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .shade-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .shade-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 3px;
+  }
+
+  .shade {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 75%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .shade-label {
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align:center;
+  }
+
+  .shade.BLACK { background-color: #000000; }
+  .shade.DARK-BROWN { background-color: #301F15; }
+  .shade.MEDIUM-BROWN { background-color: #654321; }
+  .shade.LIGHT-BROWN { background-color: #d2b48c; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var shades = document.querySelectorAll('.shade');
+    var shadeNamePlaceholder = document.getElementById('shade-name-placeholder-boldify');
+
+    shades.forEach(function(shade) {
+      shade.addEventListener('mouseenter', function() {
+        var shadeName = this.getAttribute('data-shade-name');
+        shadeNamePlaceholder.textContent = shadeName;
+      });
+
+      shade.addEventListener('mouseleave', function() {
+        shadeNamePlaceholder.textContent = 'Choose Your Shade';
+      });
+
+      shade.addEventListener('click', function() {
+        var selectedShadeHandle = this.getAttribute('data-shade-handle');
+        var productUrl = '/products/' + selectedShadeHandle;
+
+        // Redirect to the product page for the selected shade
+        window.location.href = productUrl;
+      });
+    });
+  });
+</script>

@@ -1,0 +1,136 @@
+    <style>
+        .A-pluse-container {
+           /* max-width: 1200px;
+            margin: 20px auto;*/
+            text-align: center;
+            font-family: 'Arial', sans-serif !important; /* Set your desired font family here */
+        }
+        .A-pluse-header {
+            font-size: 1.6em !important; /* Adjust the header font size here */
+            /*margin-bottom: 20px;*/
+        }
+        .A-pluse {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 35px;
+        }
+        .A-pluse-item {
+            background: white;
+            padding: 35px;
+            border-radius: 8px;
+            /*box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);*/
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: flex;
+        }
+        .A-pluse-item img {
+            /*width: 150px;*/
+            height: 150px;
+            margin-bottom: 5px;
+            border-radius:25%; /* Make the images round */
+        }
+        .A-pluse-item h3 {
+            font-size: 1.1em !important; /* Adjust the font size for the subheadings here */
+            /*margin-bottom: 10px;*/
+        }
+        .A-pluse-item p {
+            font-size: 0.95em !important; /* Adjust the font size for the paragraphs here */
+            color: #555;
+        }
+        @media (max-width: 760px) {
+            .A-pluse {
+                grid-template-columns: repeat(2, 1fr); /* Change to 2 columns on mobile */
+                gap: 10px; /* Reduce gap for mobile */
+            }
+        }
+    </style>
+
+        <hr class="rounded">
+    <hr>
+    <div class="A-pluse-container">
+        <br>
+        <div class="A-pluse-header">Biobased Gel Color With 100% Bio-Botanical Oils</div>
+        </br>
+        <div class="A-pluse">
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/2.png?v=1722585028" alt="Olive Oleic Acid">
+                <h3>Olive Oleic Acid</h3>
+                <p>Essential organic oil that provides strength and vitality. It has deep absorption, strengthening hair from roots to ends.</p>
+            </div>
+       
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/3.png?v=1722585028" alt="Meadowfoam Seed Oil">
+                <h3>Meadowfoam Seed Oil</h3>
+                <p>Organic oil that restores elasticity and prevents loss of hydration. Shine and softness, young and healthy hair.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/soyyyy_c3314a6d-d950-4123-b035-319381171aa4.png?v=1722585104" alt="Soy Derived">
+                <h3>Soy Derived</h3>
+                <p>Strengthens, protects and provides comfort.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/images_3.jpg?v=1722585185" alt="Color Revealer">
+                <h3>Color Revealer</h3>
+                <p>Formulated with organic emulsifiers for better compatibility with the skin. Its highest quality active ingredients guarantee the absence of impurities.</p>
+            </div>
+        </div>
+    </hr>
+    <hr>
+      <br>
+        <div class="A-pluse-header">Includes Multi-Care Mask With Quinoa & 99% Natural Ingredients.</div>
+       </br> 
+       <div class="A-pluse">
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/1.png?v=1722596952" alt="Quinoa">
+                <h3>Quinoa</h3>
+                <p>Very complete protein that contains the eight essential amino acids for hair, More intense & longer lasting tones. More color, shine & splendor.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/2_92d74af3-d7b1-4ece-8fe9-674881f45d8f.png?v=1722596952" alt="Baobab Proteins">
+                <h3>Baobab Proteins</h3>
+                <p>The Baobab, known as the "tree of life", has anti-aging properties, provides vitality & strength. Young & healthy hair.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/3_fc7bdb84-1f1d-49ad-95e9-b04744fa9946.png?v=1722596952" alt="Shea Butter">
+                <h3>Shea Butter</h3>
+                <p>Regenerative active ingredient, deeply nourishes and revives the natural beauty of the hair. Soothes dry scalp. Reduces frizz.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/4.png?v=1722596953" alt="Milk Thistle">
+                <h3>Milk Thistle</h3>
+                <p>Natural alternative to silicones. Provides natural shine, silicones & sensoriality.</p>
+            </div>
+             </div>
+    </hr>         
+    <hr>
+    <br>
+        <div class="A-pluse-header">Instructions For Use</div>
+        <div class="A-pluse-header">( Contains Internal Instructions Booklet )</div>
+        </br>
+        <div class="A-pluse">
+             <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/1_2e4d3ef7-7f2c-40b6-9072-e6671ac53fd6.png?v=1722600032" alt="Step 1">
+                <h3>Step 1</h3>
+                <p>Open the box & put on the gloves. Mix the dye with developer cream. Shake & Mix vigorously for 2 minutes.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/2_338bf4de-4915-4c05-b322-92358c5bc5e9.png?v=1722600033" alt="Step 2">
+                <h3>Step 2</h3>
+                <p>Apply the dye evenly to the hair, starting at the roots. Leave it for 30-40 minutes.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/4_409fa17c-0521-4b87-8043-362589abbbba.png?v=1722600033" alt="Step 3">
+                <h3>Step 3</h3>
+                <p>Rinse with plenty of water until it runs clear.</p>
+            </div>
+            <div class="A-pluse-item">
+                <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/3_35ad8ee9-0083-477b-a094-d06ad232c875.png?v=1722600032" alt="Step 4">
+                <h3>Step 4</h3>
+                <p>Finally, we apply the Multi-Care Mask with Quinoa: leave it for 3-5 minutes. It Improves color absorption and retention, facilitates styling & provides shine. Rinse thoroughly.</p>
+            </div>
+        </div>
+    </hr>	
+    	</div>
+    	</div>
+    	</div>

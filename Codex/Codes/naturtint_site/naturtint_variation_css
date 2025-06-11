@@ -1,0 +1,211 @@
+{% if product.tags contains 'Standard Products' %}
+<div class="custom-variation">
+    <div id="shade-name-placeholder">Select Your Shade</div>
+    <div class="shade-container">
+        <div class="shade-row">
+            <div class="shade shade-1n-ebony-black" data-shade-handle="permanent-hair-color-gel-1n-negro-ebano" data-shade-name="1N Ebony Black">
+                <div class="shade-label">1N</div>
+            </div>
+            <div class="shade shade-3n-dark-chestnut-brown" data-shade-handle="naturtint-permanent-hair-color-gel" data-shade-name="3N Dark Chestnut Brown">
+                <div class="shade-label">3N</div>
+            </div>
+            <div class="shade shade-3nv-deep-radiant-red" data-shade-handle="permanent-hair-color-gel-3nv-rojo-radiante-intenso" data-shade-name="3NV Deep Radiant Red">
+                <div class="shade-label">3NV</div>
+            </div>
+            <div class="shade shade-4g-golden-chestnut" data-shade-handle="permanent-hair-color-gel-4g-castano-dorado" data-shade-name="4G Golden Chestnut">
+                <div class="shade-label">4G</div>
+            </div>
+            <div class="shade shade-4m-mahogany-chestnut" data-shade-handle="permanent-hair-color-gel-4m-castano-caoba" data-shade-name="4M Mahogany Chestnut">
+                <div class="shade-label">4M</div>
+            </div>
+            <div class="shade shade-4n-natural-chestnut" data-shade-handle="permanent-hair-color-gel-4n-castano-natural" data-shade-name="4N Natural Chestnut">
+                <div class="shade-label">4N</div>
+            </div>
+        </div>
+        <div class="shade-row">
+            <div class="shade shade-4nc-deep-cappuccino-brown" data-shade-handle="permanent-hair-color-gel-4nc-marron-capiuchino-intenso" data-shade-name="4NC Deep Cappuccino Brown">
+                <div class="shade-label">4NC</div>
+            </div>
+            <div class="shade shade-5g-light-golden-chestnut" data-shade-handle="permanent-hair-color-gel-5g-castano-claro-dorado" data-shade-name="5G Light Golden Chestnut">
+                <div class="shade-label">5G</div>
+            </div>
+            <div class="shade shade-5gm-chocolate-chestnut" data-shade-handle="permanent-hair-color-gel-5gm-chocolate-intenso" data-shade-name="5GM Chocolate Chestnut">
+                <div class="shade-label">5GM</div>
+            </div>
+            <div class="shade shade-5n-light-chestnut-brown" data-shade-handle="permanent-hair-color-gel-5n-castano-claro" data-shade-name="5N Light Chestnut Brown">
+                <div class="shade-label">5N</div>
+            </div>
+            <div class="shade shade-6g-dark-golden-blonde" data-shade-handle="permanent-hair-color-gel-6g-castano-dorado" data-shade-name="6G Dark Golden Blonde">
+                <div class="shade-label">6G</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elsif product.tags contains 'Bundle Products' %}
+
+<div class="custom-variation">
+    <div id="shade-name-placeholder">Select Your Shade</div>
+    <div class="shade-container">
+        <div class="shade-row">
+            <div class="shade shade-1n-ebony-black" data-shade-handle="1n-pack-of-2" data-shade-name="1N Ebony Black">
+                <div class="shade-label">1N</div>
+            </div>
+            <div class="shade shade-3n-dark-chestnut-brown" data-shade-handle="naturtint-permanent-hair-colour-3n-pack-of-2" data-shade-name="3N Dark Chestnut Brown">
+                <div class="shade-label">3N</div>
+            </div>
+            <div class="shade shade-3nv-deep-radiant-red" data-shade-handle="naturtint-permanent-hair-colour-3nv-deep-radiant-red-170-ml-pack-of-2" data-shade-name="3NV Deep Radiant Red">
+                <div class="shade-label">3NV</div>
+            </div>
+            <div class="shade shade-4g-golden-chestnut" data-shade-handle="naturtint-permanent-hair-colour-4g-golden-chestnut-pack-of-2" data-shade-name="4G Golden Chestnut">
+                <div class="shade-label">4G</div>
+            </div>
+            <div class="shade shade-4m-mahogany-chestnut" data-shade-handle="naturtint-permanent-hair-colour-4m-mahogany-chestnut-170-ml-pack-of-2" data-shade-name="4M Mahogany Chestnut">
+                <div class="shade-label">4M</div>
+            </div>
+            <div class="shade shade-4n-natural-chestnut" data-shade-handle="naturtint-permanent-hair-colour-4n-natural-chestnut-pack-of-2" data-shade-name="4N Natural Chestnut">
+                <div class="shade-label">4N</div>
+            </div>
+        </div>
+        <div class="shade-row">
+            <div class="shade shade-4nc-deep-cappuccino-brown" data-shade-handle="naturtint-permanent-hair-colour-4nc-deep-cappuccino-brown-170-ml-pack-of-2" data-shade-name="4NC Deep Cappuccino Brown">
+                <div class="shade-label">4NC</div>
+            </div>
+            <div class="shade shade-5g-light-golden-chestnut" data-shade-handle="naturtint-permanent-hair-colour-5g-light-golden-chestnut-pack-of-2" data-shade-name="5G Light Golden Chestnut">
+                <div class="shade-label">5G</div>
+            </div>
+            <div class="shade shade-5gm-chocolate-chestnut" data-shade-handle="naturtint-permanent-hair-colour-5gm-chocolate-chestnut-pack-of-2" data-shade-name="5GM Chocolate Chestnut">
+                <div class="shade-label">5GM</div>
+            </div>
+            <div class="shade shade-5n-light-chestnut-brown" data-shade-handle="naturtint-permanent-hair-colour-pack-of-2-5n-light-chestnut-brown-170-ml" data-shade-name="5N Light Chestnut Brown">
+                <div class="shade-label">5N</div>
+            </div>
+            <div class="shade shade-6g-dark-golden-blonde" data-shade-handle="naturtint-permanent-hair-colour-6g-dark-golden-blonde-170-ml-pack-of-2" data-shade-name="6G Dark Golden Blonde">
+                <div class="shade-label">6G</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<style>
+    .custom-variation {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+        text-align: center;
+    }
+    
+    #shade-name-placeholder {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .shade-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .shade-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .shade {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 51px;
+        /* Increased by 1px */
+        height: 51px;
+        /* Increased by 1px */
+        margin: 5px;
+        padding: 2px;
+        /* Added padding */
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .shade-label {
+        color: #ffffff;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    
+    .shade-1n-ebony-black {
+        background-color: #2C2221;
+    }
+    
+    .shade-3n-dark-chestnut-brown {
+        background-color: #301F15;
+    }
+    
+    .shade-3nv-deep-radiant-red {
+        background-color: #40171F;
+    }
+    
+    .shade-4g-golden-chestnut {
+        background-color: #402D1E;
+    }
+    
+    .shade-4m-mahogany-chestnut {
+        background-color: #402127;
+    }
+    
+    .shade-4n-natural-chestnut {
+        background-color: #3D2922;
+    }
+    
+    .shade-4nc-deep-cappuccino-brown {
+        background-color: #62260E;
+    }
+    
+    .shade-5g-light-golden-chestnut {
+        background-color: #372010;
+    }
+    
+    .shade-5gm-chocolate-chestnut {
+        background-color: #3B1D12;
+    }
+    
+    .shade-5n-light-chestnut-brown {
+        background-color: #47362C;
+    }
+    
+    .shade-6g-dark-golden-blonde {
+        background-color: #70543F;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var shades = document.querySelectorAll('.shade');
+        var shadeNamePlaceholder = document.getElementById('shade-name-placeholder');
+
+        shades.forEach(function(shade) {
+            shade.addEventListener('mouseenter', function() {
+                var shadeName = this.getAttribute('data-shade-name');
+                shadeNamePlaceholder.textContent = shadeName;
+            });
+
+            shade.addEventListener('mouseleave', function() {
+                shadeNamePlaceholder.textContent = 'Select Your Shade';
+            });
+
+            shade.addEventListener('click', function() {
+                var selectedShadeHandle = this.getAttribute('data-shade-handle');
+                var productUrl = '/products/' + selectedShadeHandle;
+
+                // Redirect to the product page for the selected shade
+                window.location.href = productUrl;
+            });
+        });
+    });
+</script>

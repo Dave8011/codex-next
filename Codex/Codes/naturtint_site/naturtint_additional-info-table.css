@@ -1,0 +1,100 @@
+<style>
+/* Custom styles for the Additional Information table */
+h2 {
+    font-size: 15px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: normal;
+}
+
+td {
+    background-color: #fff;
+}
+
+tr:nth-child(even) td {
+    background-color: #f9f9f9;
+}
+
+/* Fixed width for the first column */
+th:first-child, td:first-child {
+    width: 300px;
+}
+</style>
+
+<h2>Additional Information</h2>
+<table>
+    {% if product.metafields.custom.brand_name %}
+    <tr>
+        <th>Brand Name</th>
+        <td>{{ product.metafields.custom.brand_name }}</td>
+    </tr>
+    {% endif %}
+
+    {% if product.metafields.custom.country_origin %}
+    <tr>
+        <th>Country of Origin</th>
+        <td>{{ product.metafields.custom.country_origin }}</td>
+    </tr>
+    {% endif %}
+
+    {% if product.metafields.custom.product_dimensions %}
+    <tr>
+        <th>Product Dimensions</th>
+        <td>{{ product.metafields.custom.product_dimensions }}</td>
+    </tr>
+    {% endif %}
+
+    {% if product.metafields.custom.best_before %}
+    <tr>
+        <th>Best Before</th>
+        <td>{{ product.metafields.custom.best_before }}</td>
+    </tr>
+    {% endif %}
+
+
+    {% if product.metafields.custom.manufacturer %}
+    <tr>
+        <th>Manufacturer Detail</th>
+        <td>{{ product.metafields.custom.manufacturer }}</td>
+    </tr>
+    {% endif %}
+
+    {% if product.metafields.custom.importer_detail %}
+    <tr>
+        <th>Importer Detail / Customer Care Detail</th>
+        <td>{{ product.metafields.custom.importer_detail }}</td>
+    </tr>
+    {% endif %}
+
+    {% if product.metafields.theme.ingredients %}
+    <tr>
+        <th>Ingredients</th>
+        <td>{{ product.metafields.theme.ingredients }}</td>
+    </tr>
+    {% endif %}
+    
+    {% if product.metafields.theme.safety_information %}
+    <tr>
+        <th>Safety Information</th>
+        <td>{{ product.metafields.theme.safety_information }}</td>
+    </tr>
+    {% endif %}
+
+</table>        

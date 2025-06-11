@@ -1,0 +1,75 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop By Brand</title>
+<style>
+  /* Style for the collection container */
+  .collection-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0px;
+    padding: 0px;
+    background-color: #f9f9f9;
+  }
+
+  /* Style for individual collection items */
+  .collection-item {
+    text-align: center;
+  }
+
+  /* Style for collection item images */
+  .collection-image {
+    width: 200px!; /* Increased image width */
+    height: 200px; /* Increased image height */
+    object-fit: cover;
+    border-radius: 5%; /* Set border-radius to 50% for circles */
+    margin-bottom: 5px;
+  }
+
+  /* Style for collection item names */
+  .collection-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+</style>
+
+
+  <!-- Collection container -->
+  <div class="collection-container">
+    <!-- Collection item 1: Nordic Naturals -->
+    <a href="https://vitashop.in/collections/nordic-naturals" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/Fast_Delivery_5.png?v=1706863940" alt="Nordic Naturals" class="collection-image">
+      <div class="collection-name">Nordic Naturals</div>
+    </a>
+
+    <!-- Collection item 2: Naturtint 
+    <a href="https://vitashop.in/collections/naturtint" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Untitled_design_20.jpg?v=1717675608" alt="Naturtint" class="collection-image">
+      <div class="collection-name">Naturtint</div>
+    </a>-->
+    
+    <!-- Collection item 3: Boldify-->
+    <a href="https://vitashop.in/collections/boldify" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Untitled_design_56.png?v=1721365382" alt="Nutricost" class="collection-image">
+      <div class="collection-name">Boldify</div>
+    </a>
+
+    <!-- Collection item 4: Doctor's Best -->
+    <a href="https://vitashop.in/collections/doctors-best" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/files/Untitled_design_21.jpg?v=1717675970" alt="Doctor's Best" class="collection-image">
+      <div class="collection-name">Doctor's Best</div>
+    </a>
+
+    <!-- Collection item 5: Jarrow Formulas -->
+    <a href="https://vitashop.in/collections/jarrow-formula" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/Fast_Delivery_3.png?v=1706864263" alt="Jarrow Formulas" class="collection-image">
+      <div class="collection-name">Jarrow Formulas</div>
+    </a>
+
+    <!-- Collection item 6: Nutricost -->
+    <a href="https://vitashop.in/collections/nutricost" class="collection-item">
+      <img src="https://cdn.shopify.com/s/files/1/0693/5042/4857/collections/d215d01f-6223-4dac-b6c0-015b02a98e65.__CR0_0_600_180_PT0_SX600_V1.jpg?v=1706864379" alt="Nutricost" class="collection-image">
+      <div class="collection-name">Nutricost</div>
+    </a>
+  </div>

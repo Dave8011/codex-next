@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collapsible Table with Tabs</title>
+<style>
+    /* Basic Styling */
+    .container {
+        width: 95%;
+        margin: 30px auto;
+        font-family: Quicksand;
+    }
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-left: 10px;
+        margin-bottom: 5px;
+        color: black;
+    }
+
+    /* Tab styling */
+    .tab {
+        display: flex;
+        cursor: pointer;
+        font-weight: bold;
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+    .tab div {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        background: #e0e0e0;
+        border: 1px solid #ccc;
+    }
+    .tab div.active {
+        background: white;
+        border-bottom: none;
+    }
+
+    /* Content styling */
+    .content {
+        display: none;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+    .content.active {
+        display: block;
+    }
+
+    /* Text Color Styling */
+    .highlight-text {
+        color: #000000; /* Solid black text color */
+    }
+    .secondary-text {
+        color: #000000; /* Solid black text color */
+    }
+</style>
+</head>
+<body>
+
+{% assign product_description = product.metafields.theme.product_descriptions %}
+{% assign product_info = product.metafields.custom.product_pointers %}
+
+{% if product_description or product_info %}
+<div class="container">
+    <div class="title">About This Item</div>
+    
+    <!-- Tabs -->
+    <div class="tab">
+        <div class="tablink active" onclick="openTab(event, 'description')">Product Description</div>
+        <div class="tablink" onclick="openTab(event, 'info')">Product Info</div>
+    </div>
+    
+    <!-- Collapsible Content -->
+    {% if product_description %}
+    {% assign description_items = product_description | split: "\n" %}
+    <div id="description" class="content active">
+        <ul class="highlight-text">
+            {% for item in description_items %}
+                {% if item != blank %}
+                {{ item | strip }}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if product_info %}
+    {% assign info_items = product_info | split: "\n" %}
+    <div id="info" class="content">
+        <ul class="secondary-text">
+            {% for item in info_items %}
+                {% if item != blank %}
+                {{ item | strip }}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<script>
+    function openTab(event, tabName) {
+        // Hide all contents
+        var contents = document.querySelectorAll('.content');
+        contents.forEach(content => content.classList.remove('active'));
+        
+        // Remove active class from all tabs
+        var tabs = document.querySelectorAll('.tablink');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        
+        // Show the selected tab content and make the tab active
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

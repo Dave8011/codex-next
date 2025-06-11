@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .container {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 1.5em;
+
+    }
+    .link-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin:0 auto;
+    }
+    .link-container img {
+      margin: 5px;
+      height: 50px;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+    /*@media (max-width: 760px) {
+      .link-container img {
+        height: 40px;
+      }
+    }
+    .div {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .mobile-img {
+      display: none;
+    }
+    @media (max-width: 760px) {
+      .desktop-img {
+        display: none;
+      }
+      .mobile-img {
+        display: inline;
+      }
+    }*/
+    .tested-info {
+      text-align: center;
+      margin: 5px 0;
+    }
+    .tested-info p {
+      font-weight: lighter bold;
+    }
+    .tested-info img {
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><strong>Also available on</strong></h2>
+    <div class="link-container">
+      {% if product.metafields.pdp.amazon_link != blank %}
+        <a href="{{ product.metafields.pdp.amazon_link }}" target="_blank">
+          <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_65.png?v=1721972046" alt="Amazon Mobile Link" class="mobile-img">
+        </a>
+      {% endif %}
+      {% if product.metafields.pdp.flipkart_link != blank %}
+        <a href="{{ product.metafields.pdp.flipkart_link }}" target="_blank">
+          <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_66.png?v=1721972047" alt="Flipkart Mobile Link" class="mobile-img">
+        </a>
+      {% endif %}
+      {% if product.metafields.pdp.jiomart_link != blank %}
+        <a href="{{ product.metafields.pdp.jiomart_link }}" target="_blank">
+          <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_67.png?v=1721972046" alt="Jiomart Mobile Link" class="mobile-img">
+        </a>
+      {% endif %}
+      {% if product.metafields.pdp.nykaa_link != blank %}
+        <a href="{{ product.metafields.pdp.nykaa_link }}" target="_blank">
+          <img src="https://cdn.shopify.com/s/files/1/0806/9352/6818/files/Untitled_design_68.png?v=1721974594" alt="Nykaa Mobile Link" class="mobile-img">
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  
+  <hr>
+
+  <div class="tested-info">
+    <p><strong>Dermatologically tested · Biobased certified</strong></p>
+    <img class="tested-image" src="https://cdn.iospl.com/cache/139x59-6/saurabh/cert.PNG" alt="Tested Image">
+  </div>
+</body>
+</html>
