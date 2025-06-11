@@ -334,6 +334,7 @@ export default function Index() {
 
       <style jsx global>{`
         /* ===== THEME COLORS (Unique, Warm, Soft, NOT VS Code) ===== */
+        
         :root,
         [data-theme="unique"] {
           --cf-bg: #272129;
@@ -525,6 +526,12 @@ export default function Index() {
           align-items: center;
           justify-content: center;
         }
+        .cf-editor-card {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 700px;
+  /* ...rest of your styles */
+}
         .cf-editor-card {
           width: 100%;
           max-width: 850px;
