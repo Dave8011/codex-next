@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
-    const filePath = path.join(process.cwd(), 'Codex/codes', req.query.path || '');
+    const filePath = path.join(process.cwd(), 'Codex/Codes', req.query.path || '');
 
     try {
         const content = fs.readFileSync(filePath, 'utf-8');
