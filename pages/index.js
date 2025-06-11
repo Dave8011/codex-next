@@ -1,12 +1,29 @@
 import { useEffect, useState } from 'react';
 
-// Modern Create File/Folder Component
-function CreateFileOrFolder({ currentPath, onCreated }) {
+// Helper to get the parent path
+function getParentPath(path) {
+  if (!path) return '';
+  const parts = path.split('/').filter(Boolean);
+  parts.pop();
+  return parts.join('/');
+}
+
+// Modern Create File/Folder Component (Modal style)
+function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
   const [name, setName] = useState('');
   const [type, setType] = useState('file');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (show) {
+      setName('');
+      setType('file');
+      setContent('');
+      setError('');
+    }
+  }, [show]);
 
   const handleCreate = async () => {
     if (!name.trim()) {
@@ -26,6 +43,7 @@ function CreateFileOrFolder({ currentPath, onCreated }) {
         onCreated();
         setName('');
         setContent('');
+        onClose();
       } else {
         setError(data.error || 'Failed to create.');
       }
@@ -35,75 +53,84 @@ function CreateFileOrFolder({ currentPath, onCreated }) {
     setLoading(false);
   };
 
+  if (!show) return null;
+
   return (
-    <div className="mb-6 p-5 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-slate-700 animate-fadeIn">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-slate-900 p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-700 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-200 text-xl"
+        >
+          &times;
+        </button>
+        <h2 className="text-2xl mb-4 text-blue-200 font-bold flex items-center gap-2">
           <span>{type === 'file' ? '🗎' : '📁'}</span>
           Create new {type}
         </h2>
         <select
           value={type}
           onChange={e => setType(e.target.value)}
-          className="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"
+          className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white mb-3"
         >
           <option value="file">File</option>
           <option value="folder">Folder</option>
         </select>
-      </div>
-      <input
-        type="text"
-        placeholder="Enter name (e.g. newfile.js)"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        className="w-full mb-2 p-2 rounded bg-slate-800 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500"
-        disabled={loading}
-      />
-      {type === 'file' && (
-        <textarea
-          placeholder="Optional content..."
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          className="w-full mb-2 p-2 h-20 rounded bg-slate-800 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500"
+        <input
+          type="text"
+          placeholder="Enter name (e.g. newfile.js)"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          className="w-full mb-2 p-2 rounded bg-slate-800 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500"
           disabled={loading}
         />
-      )}
-      {error && <div className="text-red-400 mb-2 text-sm">{error}</div>}
-      <button
-        onClick={handleCreate}
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition disabled:opacity-60 shadow"
-      >
-        {loading && (
-          <svg className="animate-spin h-4 w-4 mr-2 text-white" viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
+        {type === 'file' && (
+          <textarea
+            placeholder="Optional content..."
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            className="w-full mb-2 p-2 h-20 rounded bg-slate-800 text-white border border-slate-600 focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
+          />
         )}
-        ➕ Create
-      </button>
+        {error && <div className="text-red-400 mb-2 text-sm">{error}</div>}
+        <button
+          onClick={handleCreate}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition disabled:opacity-60 shadow"
+        >
+          {loading && (
+            <svg className="animate-spin h-4 w-4 mr-2 text-white" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          )}
+          ➕ Create
+        </button>
+      </div>
     </div>
   );
 }
 
-export default function Home() {
+export default function FileManager() {
   const [files, setFiles] = useState([]);
   const [currentPath, setCurrentPath] = useState('');
   const [fileContent, setFileContent] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
 
   // Fetch list of files/folders for a given path
   const fetchFiles = async (subpath = '') => {
@@ -128,50 +155,64 @@ export default function Home() {
     // eslint-disable-next-line
   }, []);
 
+  // Main UI
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-medium">
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-72 bg-slate-900/90 border-r border-slate-700 p-4 shadow-xl">
-        <h1 className="text-3xl font-bold mb-6 text-center tracking-tight text-blue-300 drop-shadow">
-          <span className="inline-block align-middle">📁</span> Codex Files
-        </h1>
-        <CreateFileOrFolder currentPath={currentPath} onCreated={() => fetchFiles(currentPath)} />
-        <ul className="space-y-1 max-h-[70vh] overflow-y-auto">
-          {files.length > 0 ? (
-            files.map((file) => (
-              <li key={file.name}>
-                {file.type === 'folder' ? (
-                  <button
-                    className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg transition ${
-                      `${currentPath}/${file.name}`.replace(/^\/+/, '') === currentPath
-                        ? 'bg-blue-800/30'
-                        : 'hover:bg-blue-800/20'
-                    } text-blue-300 font-semibold`}
-                    onClick={() => fetchFiles([currentPath, file.name].filter(Boolean).join('/'))}
-                  >
-                    <span>📂</span> {file.name}
-                  </button>
-                ) : (
-                  <button
-                    className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg transition hover:bg-green-800/20 text-green-300"
-                    onClick={() => openFile(file.name)}
-                  >
-                    <span>🗎</span> {file.name}
-                  </button>
-                )}
-              </li>
-            ))
-          ) : (
-            <li className="text-slate-400 px-2 py-2">No files found or failed to load.</li>
-          )}
-        </ul>
-      </aside>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-medium p-4 flex flex-col items-center">
+      <div className="w-full max-w-4xl mx-auto bg-slate-900/90 rounded-2xl shadow-2xl p-8 mt-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+          <h1 className="text-3xl font-bold text-blue-300 drop-shadow flex items-center gap-2">
+            <span className="inline-block align-middle">📁</span> Codex File Manager
+          </h1>
+          <div className="flex gap-4">
+            {currentPath && (
+              <button
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-white flex items-center gap-2 shadow"
+                onClick={() => fetchFiles(getParentPath(currentPath))}
+              >
+                ⬆️ Up one level
+                <span className="text-xs text-slate-400 ml-1 italic">{getParentPath(currentPath) || 'root'}</span>
+              </button>
+            )}
+            <button
+              onClick={() => setShowCreate(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow flex items-center gap-2"
+            >
+              ➕ New File/Folder
+            </button>
+          </div>
+        </div>
 
-      {/* Editor Panel */}
-      <main className="flex-1 p-6 flex flex-col items-center justify-start bg-gradient-to-br from-slate-800/70 to-slate-900/90">
-        {fileContent ? (
-          <div className="bg-slate-700/80 p-6 rounded-2xl shadow-2xl max-w-4xl w-full animate-fadeIn">
-            <div className="flex items-center justify-between mb-3">
+        {!fileContent ? (
+          <>
+            <ul className="space-y-2 mb-8">
+              {files.length > 0 ? (
+                files.map((file) => (
+                  <li key={file.name}>
+                    {file.type === 'folder' ? (
+                      <button
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition text-blue-200 hover:bg-blue-950/40 text-left font-semibold"
+                        onClick={() => fetchFiles([currentPath, file.name].filter(Boolean).join('/'))}
+                      >
+                        <span>📂</span> <span className="truncate">{file.name}</span>
+                      </button>
+                    ) : (
+                      <button
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition hover:bg-green-950/40 text-green-200 text-left"
+                        onClick={() => openFile(file.name)}
+                      >
+                        <span>🗎</span> <span className="truncate">{file.name}</span>
+                      </button>
+                    )}
+                  </li>
+                ))
+              ) : (
+                <li className="text-slate-400 px-2 py-2">No files found or failed to load.</li>
+              )}
+            </ul>
+          </>
+        ) : (
+          <div className="bg-slate-700/80 p-6 rounded-2xl shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-semibold text-white flex items-center gap-2">
                 ✍️ <span className="text-yellow-300">{fileContent.name}</span>
               </h2>
@@ -179,11 +220,11 @@ export default function Home() {
                 className="px-4 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-slate-800 transition"
                 onClick={() => fetchFiles(currentPath)}
               >
-                🔙 Back
+                🔙 All Files
               </button>
             </div>
             <textarea
-              className="w-full h-64 p-3 mb-3 rounded-xl bg-slate-900/90 text-white font-mono border border-slate-600 focus:ring-2 focus:ring-blue-400 shadow-inner transition"
+              className="w-full h-64 p-3 mb-4 rounded-xl bg-slate-900/90 text-white font-mono border border-slate-600 focus:ring-2 focus:ring-blue-400 shadow-inner transition"
               value={fileContent.content}
               onChange={(e) =>
                 setFileContent({ ...fileContent, content: e.target.value })
@@ -223,12 +264,14 @@ export default function Home() {
               </button>
             </div>
           </div>
-        ) : (
-          <div className="text-center text-slate-400 mt-32">
-            <p className="text-lg">Select a file from the sidebar to view and edit</p>
-          </div>
         )}
-      </main>
+      </div>
+      <CreateFileOrFolder
+        currentPath={currentPath}
+        show={showCreate}
+        onClose={() => setShowCreate(false)}
+        onCreated={() => fetchFiles(currentPath)}
+      />
       <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px);}
