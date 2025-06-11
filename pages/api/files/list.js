@@ -3,7 +3,7 @@ import path from 'path';
 
 export default function handler(req, res) {
   const { subpath = '' } = req.query;
-  const baseDir = path.join(process.cwd(), 'Codex', 'codes');
+  const baseDir = path.join(process.cwd(), 'Codex', 'Codes');
   const targetDir = path.join(baseDir, subpath);
 
   try {
