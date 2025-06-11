@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-
+import { useState } from 'react';
 // Modern Create File/Folder Component
 function CreateFileOrFolder({ currentPath, onCreated }) {
   const [name, setName] = useState('');
