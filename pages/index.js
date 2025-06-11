@@ -1,45 +1,37 @@
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  // Files in the current directory
   const [files, setFiles] = useState([]);
-
-  // Track the current folder path
   const [currentPath, setCurrentPath] = useState('');
-
-  // File content for editing
   const [fileContent, setFileContent] = useState(null);
-
-  // For new folder or file creation
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
-
-  // Preview modal state
   const [previewContent, setPreviewContent] = useState(null);
 
-  // Fetch files from API
+  // Fetch the list of files/folders
   const fetchFiles = async (subpath = '') => {
     const res = await fetch(`/api/files/list?subpath=${subpath}`);
     const data = await res.json();
     setFiles(data.files);
     setCurrentPath(subpath);
+    setFileContent(null);
   };
 
-  // Fetch file for editing
+  // Open file in editable mode
   const openFile = async (filename) => {
     const res = await fetch(`/api/files/open?path=${currentPath}/${filename}`);
     const data = await res.json();
     setFileContent({ name: filename, content: data.content });
   };
 
-  // Preview file content in a modal
+  // Preview file in read-only modal
   const previewFile = async (filename) => {
     const res = await fetch(`/api/files/open?path=${currentPath}/${filename}`);
     const data = await res.json();
     setPreviewContent({ name: filename, content: data.content });
   };
 
-  // Create a new folder using the GitHub API
+  // Create a folder via API (adds .gitkeep)
   const createFolder = async () => {
     if (!newFolderName.trim()) return;
     await fetch('/api/files/create-folder', {
@@ -51,7 +43,7 @@ export default function Home() {
     fetchFiles(currentPath);
   };
 
-  // Create a new file with empty content
+  // Create empty file via GitHub API
   const createFile = async () => {
     if (!newFileName.trim()) return;
     await fetch('/api/files/save', {
@@ -66,72 +58,98 @@ export default function Home() {
     fetchFiles(currentPath);
   };
 
-  // Load files on initial load
+  // Handle folder back navigation
+  const goBack = () => {
+    const parts = currentPath.split('/').filter(Boolean);
+    parts.pop();
+    fetchFiles(parts.join('/'));
+  };
+
   useEffect(() => {
     fetchFiles();
   }, []);
 
   return (
-    <div className="min-h-screen p-4 bg-gray-50 text-gray-900">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4 text-blue-800">
-          📁 File Browser: `/Codex/Codes{currentPath && `/${currentPath}`}`
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-6 font-sans text-gray-800">
+      <div className="max-w-5xl mx-auto">
+        {/* App Header */}
+        <header className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-blue-700">🧠 Codex Browser</h1>
+          <p className="text-lg mt-2 text-gray-600">Explore, edit, and manage your files in style.</p>
+        </header>
 
-        {/* Create Folder */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-4">
-          <input
-            className="p-2 border rounded w-full sm:w-1/2"
-            placeholder="📁 New folder name"
-            value={newFolderName}
-            onChange={(e) => setNewFolderName(e.target.value)}
-          />
-          <button
-            onClick={createFolder}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            ➕ Create Folder
-          </button>
+        {/* Back Button */}
+        {currentPath && (
+          <div className="mb-4">
+            <button
+              onClick={goBack}
+              className="text-sm text-blue-600 hover:underline mb-2"
+            >
+              ⬅️ Back
+            </button>
+            <p className="text-sm text-gray-500">Current path: <code>{`/Codex/Codes/${currentPath}`}</code></p>
+          </div>
+        )}
+
+        {/* File Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          {/* Folder Creator */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="📁 New folder"
+              className="flex-1 p-2 border rounded"
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+            />
+            <button
+              onClick={createFolder}
+              className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700"
+            >
+              ➕
+            </button>
+          </div>
+
+          {/* File Creator */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="📝 New file (e.g. hello.js)"
+              className="flex-1 p-2 border rounded"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+            />
+            <button
+              onClick={createFile}
+              className="bg-green-600 text-white px-4 rounded hover:bg-green-700"
+            >
+              ➕
+            </button>
+          </div>
         </div>
 
-        {/* Create File */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-6">
-          <input
-            className="p-2 border rounded w-full sm:w-1/2"
-            placeholder="📝 New file name (e.g. file.js)"
-            value={newFileName}
-            onChange={(e) => setNewFileName(e.target.value)}
-          />
-          <button
-            onClick={createFile}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            📄 Create File
-          </button>
-        </div>
-
-        {/* File & Folder List */}
-        <ul className="space-y-2 bg-white p-4 rounded shadow">
-          {files?.length > 0 ? (
+        {/* File List */}
+        <ul className="bg-white shadow-md rounded p-4 space-y-2">
+          {files?.length ? (
             files.map((file) => (
               <li key={file.name} className="flex justify-between items-center">
                 {file.type === 'folder' ? (
                   <button
-                    className="text-blue-700 underline"
+                    className="text-blue-600 font-medium hover:underline"
                     onClick={() => fetchFiles(`${currentPath}/${file.name}`)}
                   >
                     📁 {file.name}
                   </button>
                 ) : (
-                  <div className="flex items-center gap-4">
+                  <div className="flex gap-4">
                     <button
-                      className="text-green-800 underline"
+                      className="text-green-700 hover:underline"
                       onClick={() => openFile(file.name)}
                     >
                       ✏️ Edit: {file.name}
                     </button>
                     <button
-                      className="text-gray-600 underline"
+                      className="text-gray-500 hover:underline"
                       onClick={() => previewFile(file.name)}
                     >
                       👁️ Preview
@@ -141,41 +159,41 @@ export default function Home() {
               </li>
             ))
           ) : (
-            <li className="text-gray-500">No files found or failed to load.</li>
+            <li className="text-gray-400">No files found</li>
           )}
         </ul>
 
         {/* Preview Modal */}
         {previewContent && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-            <div className="bg-white p-6 rounded max-w-2xl w-full shadow-lg relative">
-              <h2 className="text-lg font-bold mb-2">👁️ Preview: {previewContent.name}</h2>
-              <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96 whitespace-pre-wrap">
+          <div className="fixed inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white max-w-2xl w-full rounded-lg shadow-lg p-6 relative">
+              <h2 className="text-xl font-semibold mb-4">👁️ Preview: {previewContent.name}</h2>
+              <pre className="bg-gray-100 p-4 rounded overflow-auto max-h-96 text-sm whitespace-pre-wrap">
                 {previewContent.content}
               </pre>
               <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
                 onClick={() => setPreviewContent(null)}
+                className="absolute top-2 right-4 text-gray-400 hover:text-red-500"
               >
-                ❌
+                ✖️
               </button>
             </div>
           </div>
         )}
 
-        {/* Edit Panel */}
+        {/* Editor */}
         {fileContent && (
-          <div className="mt-6 border p-4 rounded bg-white shadow">
-            <h2 className="font-semibold mb-2">📝 Editing: {fileContent.name}</h2>
+          <div className="mt-8 bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-semibold mb-2">📝 Editing: {fileContent.name}</h2>
             <textarea
-              className="w-full h-60 p-2 border rounded font-mono text-sm"
+              className="w-full h-64 p-3 border rounded font-mono text-sm"
               value={fileContent.content}
               onChange={(e) =>
                 setFileContent({ ...fileContent, content: e.target.value })
               }
             />
             <button
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="mt-4 px-6 py-2 bg-blue-700 text-white rounded hover:bg-blue-800"
               onClick={async () => {
                 const res = await fetch('/api/files/save', {
                   method: 'POST',
@@ -187,13 +205,13 @@ export default function Home() {
                 });
 
                 if (res.ok) {
-                  alert('✅ File saved!');
+                  alert('✅ File saved successfully!');
                 } else {
-                  alert('❌ Failed to save file.');
+                  alert('❌ Save failed.');
                 }
               }}
             >
-              💾 Save
+              💾 Save Changes
             </button>
           </div>
         )}
