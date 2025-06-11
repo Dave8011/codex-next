@@ -1,6 +1,69 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import dynamic from "next/dynamic";
 
-// Helper to get parent directory path from current path
+// Monaco Editor is loaded dynamically for Next.js SSR compatibility
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
+
+// Helper for Monaco language detection
+function getLanguage(filename = "") {
+  const ext = filename.split(".").pop().toLowerCase();
+  switch (ext) {
+    case "js":
+    case "jsx":
+      return "javascript";
+    case "ts":
+    case "tsx":
+      return "typescript";
+    case "json":
+      return "json";
+    case "css":
+      return "css";
+    case "scss":
+      return "scss";
+    case "html":
+    case "htm":
+      return "html";
+    case "md":
+    case "markdown":
+      return "markdown";
+    case "py":
+      return "python";
+    case "java":
+      return "java";
+    case "php":
+      return "php";
+    case "rb":
+      return "ruby";
+    case "c":
+    case "h":
+      return "c";
+    case "cpp":
+    case "cc":
+    case "cxx":
+    case "hpp":
+      return "cpp";
+    case "go":
+      return "go";
+    case "rs":
+      return "rust";
+    case "sh":
+    case "bash":
+      return "shell";
+    case "xml":
+      return "xml";
+    case "yml":
+    case "yaml":
+      return "yaml";
+    case "sql":
+      return "sql";
+    case "swift":
+      return "swift";
+    default:
+      return "plaintext";
+  }
+}
+
+// Helper to get parent directory
 function getParentPath(path) {
   if (!path) return "";
   const parts = path.split("/").filter(Boolean);
@@ -10,16 +73,16 @@ function getParentPath(path) {
 
 // Theme context for toggling dark/light mode
 function useTheme() {
-  // Default to dark, use persisted value if exists
   const [theme, setTheme] = useState(
-    () => typeof window !== "undefined" ? (localStorage.getItem("theme") || "dark") : "dark"
+    () =>
+      typeof window !== "undefined"
+        ? localStorage.getItem("theme") || "dark"
+        : "dark"
   );
-
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("theme", theme);
   }, [theme]);
-
   return [theme, setTheme];
 }
 
@@ -81,7 +144,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
         >
           &times;
         </button>
-        {/* Title and type selector */}
         <h2 className="modal-title">
           <span>{type === "file" ? "🗎" : "📁"}</span> Create new {type}
         </h2>
@@ -93,7 +155,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
           <option value="file">File</option>
           <option value="folder">Folder</option>
         </select>
-        {/* Name input */}
         <input
           type="text"
           placeholder="Enter name (e.g. newfile.js)"
@@ -102,7 +163,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
           className="modal-input"
           disabled={loading}
         />
-        {/* Optional content for files */}
         {type === "file" && (
           <textarea
             placeholder="Optional content..."
@@ -113,7 +173,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
           />
         )}
         {error && <div className="modal-error">{error}</div>}
-        {/* Create button */}
         <button
           onClick={handleCreate}
           disabled={loading}
@@ -131,12 +190,15 @@ export default function FileManager() {
   const [theme, setTheme] = useTheme();
   const [files, setFiles] = useState([]);
   const [currentPath, setCurrentPath] = useState("");
-  const [fileContent, setFileContent] = useState(null);
+  const [fileContent, setFileContent] = useState(null); // { name, content }
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
+  const monacoRef = useRef(null);
+  const editorRef = useRef(null);
 
-  // Fetch a list of files/folders for a given path
+  // Fetch list of files/folders for a given path
   const fetchFiles = async (subpath = "") => {
     const res = await fetch(`/api/files/list?subpath=${encodeURIComponent(subpath)}`);
     const data = await res.json();
@@ -152,12 +214,29 @@ export default function FileManager() {
     const data = await res.json();
     setFileContent({ name: filename, content: data.content });
     setSaveStatus("");
+    setCopyStatus("");
   };
 
   useEffect(() => {
     fetchFiles();
     // eslint-disable-next-line
   }, []);
+
+  // Format code in Monaco
+  function handleFormat() {
+    if (editorRef.current) {
+      editorRef.current.getAction("editor.action.formatDocument").run();
+    }
+  }
+
+  // Copy code to clipboard
+  const handleCopy = async () => {
+    if (fileContent?.content) {
+      await navigator.clipboard.writeText(fileContent.content);
+      setCopyStatus("Copied!");
+      setTimeout(() => setCopyStatus(""), 1200);
+    }
+  };
 
   // --- MAIN UI ---
   return (
@@ -177,10 +256,8 @@ export default function FileManager() {
         {/* Sidebar-like Folder Tree */}
         <div className="filetree">
           <div className="filetree-section">
-            {/* Change the string below to update the top-level folder label */}
             <div className="filetree-header">Sandbox</div>
             <ul className="filetree-list">
-              {/* Show "Up" button for navigation if not in root */}
               {currentPath && (
                 <li>
                   <button
@@ -192,7 +269,6 @@ export default function FileManager() {
                   </button>
                 </li>
               )}
-              {/* List directories and files */}
               {files.length > 0 ? (
                 files.map((file) => (
                   <li key={file.name}>
@@ -223,7 +299,6 @@ export default function FileManager() {
                 <li className="filetree-empty">No files found.</li>
               )}
             </ul>
-            {/* New file/folder button */}
             <button className="filetree-createbtn" onClick={() => setShowCreate(true)}>
               ➕ New File/Folder
             </button>
@@ -234,27 +309,72 @@ export default function FileManager() {
           {fileContent ? (
             <div className="editor-panel-inner">
               <div className="editor-panel-header">
-                {/* File name and back button */}
                 <span className="editor-panel-title">
                   ✍️ <span className="editor-panel-filename">{fileContent.name}</span>
+                  <span className="editor-panel-language">
+                    ({getLanguage(fileContent.name)})
+                  </span>
                 </span>
-                <button
-                  className="editor-panel-back"
-                  onClick={() => fetchFiles(currentPath)}
-                >
-                  🔙 All Files
-                </button>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {/* Format Button: only show for code files */}
+                  <button
+                    className="editor-panel-format"
+                    onClick={handleFormat}
+                    title="Auto Format"
+                  >
+                    🪄 Format
+                  </button>
+                  <button
+                    className="editor-panel-copy"
+                    onClick={handleCopy}
+                    title="Copy code"
+                  >
+                    {copyStatus ? "✅ Copied" : "📋 Copy"}
+                  </button>
+                  <button
+                    className="editor-panel-back"
+                    onClick={() => fetchFiles(currentPath)}
+                  >
+                    🔙 All Files
+                  </button>
+                </div>
               </div>
-              {/* Main text/code area */}
-              <textarea
-                className="editor-panel-textarea"
-                value={fileContent.content}
-                onChange={(e) =>
-                  setFileContent({ ...fileContent, content: e.target.value })
-                }
-              />
+              {/* Monaco Editor */}
+              <div style={{
+                height: "540px",
+                borderRadius: 8,
+                overflow: "hidden",
+                margin: "0 28px 18px 28px",
+                boxShadow: "0 2px 12px #0002"
+              }}>
+                <MonacoEditor
+                  height="540px"
+                  defaultLanguage={getLanguage(fileContent.name)}
+                  language={getLanguage(fileContent.name)}
+                  value={fileContent.content}
+                  theme={theme === "light" ? "vs-light" : "vs-dark"}
+                  onChange={val =>
+                    setFileContent({ ...fileContent, content: val })
+                  }
+                  onMount={(editor, monaco) => {
+                    monacoRef.current = monaco;
+                    editorRef.current = editor;
+                  }}
+                  options={{
+                    fontSize: 16,
+                    fontFamily: "Menlo, Monaco, Fira Mono, monospace",
+                    minimap: { enabled: false },
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    scrollBeyondLastLine: false,
+                    smoothScrolling: true,
+                    automaticLayout: true,
+                    wordWrap: "on",
+                    scrollbar: { vertical: "auto" }
+                  }}
+                />
+              </div>
               <div className="editor-panel-footer">
-                {/* Save status area */}
                 <span className="editor-panel-status">
                   {saveStatus === "saving" && <span>💾 Saving...</span>}
                   {saveStatus === "saved" && (
@@ -264,7 +384,6 @@ export default function FileManager() {
                     <span className="editor-panel-error">❌ Save failed</span>
                   )}
                 </span>
-                {/* Save button */}
                 <button
                   className="editor-panel-save"
                   disabled={saving}
@@ -318,7 +437,6 @@ export default function FileManager() {
         For further dark/light tweaks, use [data-theme="light"] CSS block.
       */}
       <style jsx global>{`
-        /* Theme color variables for dark and light mode */
         :root {
           --bg-main: #181414;
           --bg-panel: #231f1f;
@@ -330,6 +448,8 @@ export default function FileManager() {
           --editor-panel-border: #3d3535;
           --accent: #ffd857;
           --filetree-folder: #e7d37a;
+          --btn-gradient: linear-gradient(90deg, #ffd857 0, #eab94d 100%);
+          --btn-gradient-hover: linear-gradient(90deg, #ffe187 0, #ffae42 100%);
         }
         [data-theme="light"] {
           --bg-main: #f3ece6;
@@ -342,6 +462,8 @@ export default function FileManager() {
           --editor-panel-border: #d3beac;
           --accent: #af7e1c;
           --filetree-folder: #af7e1c;
+          --btn-gradient: linear-gradient(90deg, #ffe187 0, #ffae42 100%);
+          --btn-gradient-hover: linear-gradient(90deg, #ffd857 0, #eab94d 100%);
         }
 
         body,
@@ -355,16 +477,17 @@ export default function FileManager() {
           background: var(--bg-main);
         }
         .editor-bar {
-          height: 36px;
+          height: 42px;
           display: flex;
           align-items: center;
           justify-content: space-between;
           background: var(--bg-sidebar);
-          padding: 0 18px;
+          padding: 0 22px;
           border-bottom: 1px solid var(--editor-panel-border);
+          font-size: 18px;
         }
         .editor-logo {
-          font-size: 15px;
+          font-size: 18px;
           font-weight: bold;
           color: var(--accent);
           letter-spacing: 1px;
@@ -373,13 +496,19 @@ export default function FileManager() {
           background: none;
           color: var(--text-main);
           border: none;
-          font-size: 15px;
+          font-size: 17px;
           cursor: pointer;
+          padding: 6px 20px;
+          border-radius: 6px;
+          transition: background 0.15s;
+        }
+        .theme-toggle:hover {
+          background: var(--filetree-hover);
         }
 
         .filemanager-container {
           display: flex;
-          height: calc(100vh - 36px);
+          height: calc(100vh - 42px);
         }
         .filetree {
           width: 260px;
@@ -391,17 +520,18 @@ export default function FileManager() {
           flex-direction: column;
         }
         .filetree-section {
-          padding: 10px 0 0 0;
+          padding: 18px 0 0 0;
         }
         .filetree-header {
-          font-size: 15px;
+          font-size: 16px;
           font-weight: bold;
           color: var(--accent);
-          margin: 0 0 4px 18px;
+          margin: 0 0 8px 18px;
+          letter-spacing: 0.5px;
         }
         .filetree-list {
           list-style: none;
-          padding: 0 0 0 0;
+          padding: 0;
           margin: 0;
         }
         .filetree-folder,
@@ -413,39 +543,42 @@ export default function FileManager() {
           text-align: left;
           display: flex;
           align-items: center;
-          font-size: 15px;
-          padding: 3px 18px 3px 18px;
+          font-size: 16px;
+          padding: 5px 18px 5px 18px;
           cursor: pointer;
           border-radius: 4px;
-          transition: background 0.14s;
+          transition: background 0.14s, color 0.12s;
         }
         .filetree-folder:hover,
         .filetree-file:hover {
           background: var(--filetree-hover);
+          color: var(--accent);
         }
         .filetree-foldericon,
         .filetree-fileicon {
-          margin-right: 6px;
+          margin-right: 7px;
         }
         .filetree-createbtn {
-          width: calc(100% - 32px);
-          margin: 10px 16px 0 16px;
-          background: var(--accent);
+          width: calc(100% - 34px);
+          margin: 14px 16px 0 16px;
+          background: var(--btn-gradient);
           color: var(--bg-main);
           border: none;
-          border-radius: 4px;
-          padding: 6px 0;
+          border-radius: 6px;
+          padding: 10px 0;
           font-weight: bold;
           cursor: pointer;
-          transition: background 0.14s;
+          font-size: 15px;
+          box-shadow: 0 1px 2px #0002;
+          transition: background 0.13s;
         }
         .filetree-createbtn:hover {
-          background: #ffe187;
+          background: var(--btn-gradient-hover);
         }
         .filetree-empty {
           color: var(--text-faded);
-          font-size: 14px;
-          padding: 6px 18px;
+          font-size: 15px;
+          padding: 8px 18px;
         }
         .filetree-foldername,
         .filetree-filename {
@@ -458,63 +591,71 @@ export default function FileManager() {
         .editor-panel {
           flex: 1;
           background: var(--bg-panel);
-          padding: 0;
           min-width: 0;
           display: flex;
           flex-direction: column;
         }
         .editor-panel-inner {
-          margin: 32px 36px 0 36px;
+          margin: 44px 48px 0 48px;
           background: var(--bg-modal);
-          border-radius: 10px;
+          border-radius: 14px;
           border: 1px solid var(--editor-panel-border);
-          box-shadow: 0 0 10px #0002;
-          padding: 0 0 24px 0;
-          min-height: 520px;
+          box-shadow: 0 0 14px #0002;
+          padding: 0 0 28px 0;
+          min-height: 560px;
           display: flex;
           flex-direction: column;
+          position: relative;
         }
         .editor-panel-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 22px 28px 8px 28px;
+          padding: 28px 28px 10px 28px;
         }
         .editor-panel-title {
-          font-size: 20px;
+          font-size: 21px;
           font-weight: bold;
           color: var(--accent);
+          letter-spacing: 0.5px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
         }
         .editor-panel-filename {
           color: #fff;
+          margin-left: 6px;
         }
-        .editor-panel-back {
-          background: none;
+        .editor-panel-language {
+          font-size: 14px;
+          color: var(--text-faded);
+          margin-left: 9px;
+        }
+        .editor-panel-back,
+        .editor-panel-format,
+        .editor-panel-copy {
+          background: var(--bg-panel);
           border: 1px solid var(--editor-panel-border);
-          border-radius: 4px;
+          border-radius: 5px;
           color: var(--text-main);
-          padding: 5px 18px;
+          padding: 7px 18px;
           font-size: 15px;
           cursor: pointer;
-          transition: background 0.14s;
+          margin-left: 0;
+          margin-right: 0;
+          font-weight: 500;
+          transition: background 0.13s, color 0.13s;
         }
-        .editor-panel-back:hover {
-          background: var(--filetree-hover);
+        .editor-panel-back:hover,
+        .editor-panel-format:hover,
+        .editor-panel-copy:hover {
+          background: var(--accent);
+          color: var(--bg-main);
         }
-        .editor-panel-textarea {
-          width: calc(100% - 56px);
-          margin: 0 28px 10px 28px;
-          height: 340px;
-          background: var(--bg-panel);
-          color: var(--text-main);
-          font-size: 15px;
-          font-family: inherit;
-          border: 1px solid var(--editor-panel-border);
-          border-radius: 6px;
-          padding: 15px;
-          resize: vertical;
-          outline: none;
+        .editor-panel-copy[disabled] {
+          opacity: 0.65;
         }
+
         .editor-panel-footer {
           display: flex;
           justify-content: space-between;
@@ -532,24 +673,26 @@ export default function FileManager() {
           color: #f23a42;
         }
         .editor-panel-save {
-          background: var(--accent);
+          background: var(--btn-gradient);
           color: var(--bg-main);
           border: none;
-          border-radius: 4px;
-          padding: 7px 24px;
+          border-radius: 6px;
+          padding: 11px 36px;
           font-weight: bold;
-          font-size: 15px;
+          font-size: 16px;
           cursor: pointer;
-          transition: background 0.14s;
+          transition: background 0.13s;
+          box-shadow: 0 2px 8px #0001;
         }
         .editor-panel-save:hover {
-          background: #ffe187;
+          background: var(--btn-gradient-hover);
         }
         .editor-panel-empty {
-          margin: 48px 32px 0 32px;
+          margin: 60px 36px 0 36px;
           color: var(--text-faded);
-          font-size: 18px;
+          font-size: 20px;
           text-align: center;
+          letter-spacing: 0.2px;
         }
 
         /* Modal styles */
@@ -571,68 +714,68 @@ export default function FileManager() {
           border: 1px solid var(--editor-panel-border);
           border-radius: 12px;
           box-shadow: 0 2px 32px #0006;
-          padding: 32px 28px 24px 28px;
-          min-width: 290px;
-          max-width: 340px;
+          padding: 38px 32px 28px 32px;
+          min-width: 310px;
+          max-width: 400px;
           position: relative;
         }
         .modal-close {
           background: none;
           border: none;
           position: absolute;
-          top: 10px;
-          right: 14px;
-          font-size: 28px;
+          top: 14px;
+          right: 18px;
+          font-size: 33px;
           color: var(--text-faded);
           cursor: pointer;
         }
         .modal-title {
           font-size: 20px;
           font-weight: bold;
-          margin-bottom: 16px;
+          margin-bottom: 18px;
           color: var(--accent);
         }
         .modal-select,
         .modal-input,
         .modal-textarea {
           width: 100%;
-          padding: 7px 10px;
-          margin-bottom: 12px;
-          border-radius: 5px;
+          padding: 9px 13px;
+          margin-bottom: 15px;
+          border-radius: 6px;
           border: 1px solid var(--editor-panel-border);
-          font-size: 15px;
+          font-size: 16px;
           background: var(--bg-panel);
           color: var(--text-main);
         }
         .modal-textarea {
-          min-height: 65px;
+          min-height: 67px;
           resize: vertical;
         }
         .modal-error {
           color: #f23a42;
           font-size: 14px;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
         .modal-create {
           width: 100%;
-          padding: 10px 0;
-          font-size: 15px;
+          padding: 13px 0;
+          font-size: 16px;
           font-weight: bold;
           border: none;
-          border-radius: 4px;
-          background: var(--accent);
+          border-radius: 6px;
+          background: var(--btn-gradient);
           color: var(--bg-main);
           cursor: pointer;
-          transition: background 0.14s;
+          transition: background 0.13s;
         }
         .modal-create:hover {
-          background: #ffe187;
+          background: var(--btn-gradient-hover);
         }
         .modal-spinner {
           display: inline-block;
-          margin-right: 8px;
-          width: 18px;
-          height: 18px;
+          margin-right: 10px;
+          width: 19px;
+          height: 19px;
           border: 2px solid #fff;
           border-top: 2px solid #aaa;
           border-radius: 50%;
@@ -643,6 +786,11 @@ export default function FileManager() {
         }
 
         /* Responsive tweaks for mobile/tablet */
+        @media (max-width: 1100px) {
+          .editor-panel-inner {
+            margin: 22px 2vw 0 2vw;
+          }
+        }
         @media (max-width: 900px) {
           .filemanager-container {
             flex-direction: column;
@@ -656,17 +804,17 @@ export default function FileManager() {
             overflow-x: auto;
           }
           .editor-panel-inner {
-            margin: 24px 5vw 0 5vw;
-            min-height: 420px;
+            margin: 16px 2vw 0 2vw;
+            min-height: 400px;
           }
         }
         @media (max-width: 600px) {
           .editor-bar {
-            font-size: 13px;
+            font-size: 14px;
             padding: 0 7px;
           }
           .editor-panel-inner {
-            margin: 16px 0 0 0;
+            margin: 12px 0 0 0;
             min-height: 220px;
             padding: 0 0 10px 0;
           }
@@ -675,10 +823,9 @@ export default function FileManager() {
             padding-left: 7px;
             padding-right: 7px;
           }
-          .editor-panel-textarea {
-            margin-left: 7px;
-            margin-right: 7px;
-            height: 120px;
+          .editor-panel-empty {
+            margin: 24px 12px 0 12px;
+            font-size: 15px;
           }
         }
       `}</style>
