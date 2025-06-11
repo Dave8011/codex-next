@@ -82,25 +82,32 @@ export default function Home() {
           <button onClick={goBack} className="underline text-white">⬅ Back</button>
         )}
         <ul className="space-y-2">
-          {files?.map((file) => (
-            <li key={file.name}>
-              {file.type === 'folder' ? (
-                <button onClick={() => fetchFiles(`${currentPath}/${file.name}`)} className="text-blue-400 underline">
-                  📁 {file.name}
-                </button>
-              ) : (
-                <div className="space-x-2">
-                  <button onClick={() => openFile(file.name)} className="underline text-green-400">
-                    ✏ {file.name}
-                  </button>
-                  <button onClick={() => previewFile(file.name)} className="underline text-gray-400">
-                    👁
-                  </button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+  {files?.length > 0 ? (
+    files.map((file) =>
+      file.name ? (
+        <li key={file.name}>
+          {file.type === "folder" ? (
+            <button
+              className="text-blue-600 underline"
+              onClick={() => fetchFiles(`${currentPath}/${file.name}`)}
+            >
+              📂 {file.name}
+            </button>
+          ) : (
+            <button
+              className="text-green-700 underline"
+              onClick={() => openFile(file.name)}
+            >
+              📄 {file.name}
+            </button>
+          )}
+        </li>
+      ) : null
+    )
+  ) : (
+    <li className="text-gray-500">No files found or failed to load.</li>
+  )}
+</ul>
 
         {/* New Folder */}
         <div className="pt-6">
