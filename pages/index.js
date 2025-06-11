@@ -258,30 +258,30 @@ export default function Index() {
                 </div>
               </div>
               <div className="cf-monaco-wrap">
-                <MonacoEditor
-                  height="56vh"
-                  defaultLanguage={detectLanguage(fileContent.name)}
-                  language={detectLanguage(fileContent.name)}
-                  value={fileContent.content}
-                  theme={theme === "unique" ? "vs-dark" : theme === "light" ? "vs-light" : "vs-dark"}
-                  onChange={val => setFileContent({ ...fileContent, content: val })}
-                  onMount={(editor, monaco) => {
-                    monacoRef.current = monaco;
-                    editorRef.current = editor;
-                  }}
-                  options={{
-                    fontSize: 17,
-                    fontFamily: "Fira Mono, Menlo, Monaco, monospace",
-                    minimap: { enabled: false },
-                    formatOnPaste: true,
-                    formatOnType: true,
-                    scrollBeyondLastLine: false,
-                    smoothScrolling: true,
-                    automaticLayout: true,
-                    wordWrap: "on",
-                  }}
-                />
-              </div>
+  <MonacoEditor
+    height="75vh" // Increased height
+    defaultLanguage={detectLanguage(fileContent.name)}
+    language={detectLanguage(fileContent.name)}
+    value={fileContent.content}
+    theme={theme === "unique" ? "vs-dark" : theme === "light" ? "vs-light" : "vs-dark"}
+    onChange={val => setFileContent({ ...fileContent, content: val })}
+    onMount={(editor, monaco) => {
+      monacoRef.current = monaco;
+      editorRef.current = editor;
+    }}
+    options={{
+      fontSize: 17,
+      fontFamily: "Fira Mono, Menlo, Monaco, monospace",
+      minimap: { enabled: false },
+      formatOnPaste: true,
+      formatOnType: true,
+      scrollBeyondLastLine: false,
+      smoothScrolling: true,
+      automaticLayout: true,
+      wordWrap: "on",
+    }}
+  />
+</div>
               <div className="cf-editor-statusbar">
                 <span className="cf-status-label">
                   {saveStatus === "saving" && "💾 Saving..."}
