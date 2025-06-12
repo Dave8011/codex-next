@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 
 // Monaco Editor dynamic import for SSR safety
@@ -86,7 +86,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
   if (!show) return null;
 
   return (
-    <div className="cf-modal-bg">
+    <div className="cf-modal-bg" role="dialog" aria-modal="true">
       <div className="cf-modal">
         <button onClick={onClose} className="cf-modal-close" aria-label="Close">
           &times;
@@ -106,6 +106,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
           onChange={e => setName(e.target.value)}
           className="cf-modal-input"
           disabled={loading}
+          aria-label="Name"
         />
         {type === "file" && (
           <textarea
@@ -115,6 +116,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
             className="cf-modal-textarea"
             disabled={loading}
             style={{ minHeight: 48 }}
+            aria-label="File content"
           />
         )}
         {error && <div className="cf-modal-error">{error}</div>}
@@ -135,32 +137,46 @@ export default function Index() {
   const [saveStatus, setSaveStatus] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [sidebarError, setSidebarError] = useState("");
   const monacoRef = useRef(null);
   const editorRef = useRef(null);
 
   // Fetch files and folders
-  const fetchFiles = async (subpath = "") => {
-    const res = await fetch(`/api/files/list?subpath=${encodeURIComponent(subpath)}`);
-    const data = await res.json();
-    setFiles(data.files || []);
-    setCurrentPath(subpath);
-    setFileContent(null);
-  };
+  const fetchFiles = useCallback(async (subpath = "") => {
+    try {
+      setSidebarError("");
+      const res = await fetch(`/api/files/list?subpath=${encodeURIComponent(subpath)}`);
+      if (!res.ok) throw new Error("Failed to load files.");
+      const data = await res.json();
+      setFiles(data.files || []);
+      setCurrentPath(subpath);
+      setFileContent(null);
+    } catch (e) {
+      setFiles([]);
+      setSidebarError("Unable to load files.");
+    }
+  }, []);
 
   // Open file for editing
-  const openFile = async (filename) => {
+  const openFile = useCallback(async (filename) => {
     const fullPath = [currentPath, filename].filter(Boolean).join("/");
-    const res = await fetch(`/api/files/open?path=${encodeURIComponent(fullPath)}`);
-    const data = await res.json();
-    setFileContent({ name: filename, content: data.content });
-    setSaveStatus("");
-    setCopyStatus("");
-  };
+    try {
+      const res = await fetch(`/api/files/open?path=${encodeURIComponent(fullPath)}`);
+      if (!res.ok) throw new Error("Failed to open file.");
+      const data = await res.json();
+      setFileContent({ name: filename, content: data.content });
+      setSaveStatus("");
+      setCopyStatus("");
+    } catch (e) {
+      setFileContent(null);
+      setSaveStatus("error");
+    }
+  }, [currentPath]);
 
   useEffect(() => {
     fetchFiles();
     // eslint-disable-next-line
-  }, []);
+  }, [fetchFiles]);
 
   // Format code in Monaco
   function handleFormat() {
@@ -171,10 +187,15 @@ export default function Index() {
 
   // Copy file code to clipboard
   const handleCopy = async () => {
-    if (fileContent?.content) {
-      await navigator.clipboard.writeText(fileContent.content);
-      setCopyStatus("Copied!");
-      setTimeout(() => setCopyStatus(""), 1500);
+    if (fileContent?.content && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(fileContent.content);
+        setCopyStatus("Copied!");
+        setTimeout(() => setCopyStatus(""), 1500);
+      } catch {
+        setCopyStatus("Copy failed");
+        setTimeout(() => setCopyStatus(""), 1500);
+      }
     }
   };
 
@@ -203,27 +224,31 @@ export default function Index() {
 
       <main className="cf-main">
         {/* Sidebar */}
-        <nav className="cf-sidebar">
+        <nav className="cf-sidebar" aria-label="File navigation">
           <div className="cf-sidebar-title">Browse</div>
           {currentPath && (
             <button
               className="cf-sidebar-item cf-up"
               onClick={() => fetchFiles(parentPath(currentPath))}
+              aria-label="Up one folder"
             >
               <span className="cf-sidebar-icon">⬆️</span>
               <span className="cf-sidebar-label">..</span>
             </button>
           )}
-          {files.length > 0 ? (
+          {sidebarError ? (
+            <div className="cf-sidebar-empty">{sidebarError}</div>
+          ) : files.length > 0 ? (
             files.map(file => (
               <button
-                key={file.name}
+                key={`${currentPath}/${file.name}`}
                 className={`cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}`}
                 onClick={() =>
                   file.type === "folder"
                     ? fetchFiles([currentPath, file.name].filter(Boolean).join("/"))
                     : openFile(file.name)
                 }
+                aria-label={file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}`}
               >
                 <span className="cf-sidebar-icon">
                   {file.type === "folder" ? "📂" : "📄"}
@@ -258,30 +283,30 @@ export default function Index() {
                 </div>
               </div>
               <div className="cf-monaco-wrap">
-  <MonacoEditor
-    height="75vh" // Increased height
-    defaultLanguage={detectLanguage(fileContent.name)}
-    language={detectLanguage(fileContent.name)}
-    value={fileContent.content}
-    theme={theme === "unique" ? "vs-dark" : theme === "light" ? "vs-light" : "vs-dark"}
-    onChange={val => setFileContent({ ...fileContent, content: val })}
-    onMount={(editor, monaco) => {
-      monacoRef.current = monaco;
-      editorRef.current = editor;
-    }}
-    options={{
-      fontSize: 17,
-      fontFamily: "Fira Mono, Menlo, Monaco, monospace",
-      minimap: { enabled: false },
-      formatOnPaste: true,
-      formatOnType: true,
-      scrollBeyondLastLine: false,
-      smoothScrolling: true,
-      automaticLayout: true,
-      wordWrap: "on",
-    }}
-  />
-</div>
+                <MonacoEditor
+                  height="75vh"
+                  defaultLanguage={detectLanguage(fileContent.name)}
+                  language={detectLanguage(fileContent.name)}
+                  value={fileContent.content}
+                  theme={theme === "unique" ? "vs-dark" : theme === "light" ? "vs-light" : "vs-dark"}
+                  onChange={val => setFileContent({ ...fileContent, content: val })}
+                  onMount={(editor, monaco) => {
+                    monacoRef.current = monaco;
+                    editorRef.current = editor;
+                  }}
+                  options={{
+                    fontSize: 17,
+                    fontFamily: "Fira Mono, Menlo, Monaco, monospace",
+                    minimap: { enabled: false },
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    scrollBeyondLastLine: false,
+                    smoothScrolling: true,
+                    automaticLayout: true,
+                    wordWrap: "on",
+                  }}
+                />
+              </div>
 
               <div className="cf-editor-statusbar">
                 <span className="cf-status-label">
@@ -296,21 +321,27 @@ export default function Index() {
                     setSaving(true);
                     setSaveStatus("saving");
                     const fullPath = [currentPath, fileContent.name].filter(Boolean).join("/");
-                    const res = await fetch("/api/files/save", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        path: fullPath,
-                        content: fileContent.content,
-                      }),
-                    });
-                    setSaving(false);
-                    if (res.ok) {
-                      setSaveStatus("saved");
-                      setTimeout(() => setSaveStatus(""), 1800);
-                    } else {
+                    try {
+                      const res = await fetch("/api/files/save", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          path: fullPath,
+                          content: fileContent.content,
+                        }),
+                      });
+                      if (res.ok) {
+                        setSaveStatus("saved");
+                        setTimeout(() => setSaveStatus(""), 1800);
+                      } else {
+                        const data = await res.json().catch(() => ({}));
+                        setSaveStatus("error");
+                        // Optionally show data.error here
+                      }
+                    } catch {
                       setSaveStatus("error");
                     }
+                    setSaving(false);
                   }}
                 >
                   {saving ? "💾 Saving..." : "💾 Save"}
@@ -333,9 +364,12 @@ export default function Index() {
         onCreated={() => fetchFiles(currentPath)}
       />
 
+      {/* ...styles are the same as your current version... */}
       <style jsx global>{`
         /* ===== THEME COLORS (Unique, Warm, Soft, NOT VS Code) ===== */
-        
+        /* styles omitted for brevity, use your existing styles */
+     
+     
         :root,
         [data-theme="unique"] {
           --cf-bg: #272129;
@@ -776,7 +810,7 @@ export default function Index() {
             margin-left: 6px; margin-right: 6px;
           }
         }
-      `}</style>
+       `}</style>
     </div>
   );
 }
