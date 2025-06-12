@@ -282,6 +282,7 @@ export default function Index() {
     }}
   />
 </div>
+
               <div className="cf-editor-statusbar">
                 <span className="cf-status-label">
                   {saveStatus === "saving" && "💾 Saving..."}
