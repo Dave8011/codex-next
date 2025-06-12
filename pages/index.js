@@ -207,7 +207,7 @@ export default function Index() {
     <div className="cf-root">
       {/* Header */}
       <header className="cf-header">
-        <span className="cf-logo">🌟 CodexUnique</span>
+        <span className="cf-logo"> ⮜ ⮞ Codex Panel </span>
         <div className="cf-header-actions">
           <button
             className="cf-btn cf-theme-btn"
