@@ -502,8 +502,8 @@ export default function Index() {
           min-width: 0;
         }
         .cf-sidebar {
-          width: 250px;
-          min-width: 170px;
+          width: 290px;
+          min-width: 180px;
           background: var(--cf-sidebar);
           border-right: 2px solid var(--cf-border);
           padding: 0 0 10px 0;
