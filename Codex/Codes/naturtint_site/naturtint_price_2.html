@@ -1,6 +1,6 @@
 <style>
     .deal-banner {
-        background-color: #E75C86;
+        background-color: #fa3772;
         /* Magenta */
         color: white;
         font-family: Arial, sans-serif;
@@ -10,91 +10,69 @@
         display: inline-block;
         margin-bottom: 10px;
     }
-    
-    .deal-banner2 {
-        background-color: #dd2e62;
-        /* Rose Pink */
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        padding: 2px 8px;
-        border-radius: 5px;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-    
+
     .price-section {
         margin-top: 5px;
     }
-    
+
     .discount {
         color: #d60b47;
         font-size: 20px;
         font-weight: bold;
         margin-right: 5px;
     }
-    
-    .deal-price {
-        color: black;
+
+    .deal-price,
+    .original-price {
         font-size: 25px;
         font-weight: bold;
-        /* padding-left: ; */
+        color: rgb(0, 0, 0);
     }
-    
-    .original-price {
-        color: grey;
-        font-size: 25px;
-    }
-    
-    .strikethrough-price {
-        text-decoration: line-through;
-        font-size: 25px;
-    }
-    
-    .strikethrough-price1 {
-        color: black;
-        font-size: 20px;
-        /* font-weight: bold; */
-        text-decoration: line-through;
-    }
-    
+
+
     .currency-symbol {
         font-size: 20px;
     }
-    
-    .currency-symbol1 {
-        font-size: 20px;
-        /* padding-left: 4%; */
-    }
-    
+
     .countdown {
         font-family: Arial, sans-serif;
         font-size: 18px;
         color: blue;
         margin-top: 10px;
+        font-weight: bold;
     }
-    
+
     .product-banner {
         margin-bottom: 20px;
     }
-    
+
     .discount-code {
         display: inline-flex;
         align-items: center;
-        /* Vertically align the icon and text */
         gap: 8px;
-        /* Add space between the image and text */
         font-size: 15px;
         font-weight: bold;
-        color: #333;
-        /* Text color */
+        color: #000000;
+    }
+
+    .text-deal {
+        color: #ff0000;
+        font-size: 15px;
+        font-weight: bold;
+        margin-top: 5px;
     }
 </style>
-<script>
-    function countdownTimer(id, endDate) {
-        const countdownDate = new Date(endDate).getTime();
 
-        const x = setInterval(function() {
+<script>
+    function countdownTimer(id, daysToAdd) {
+        let now = new Date();
+        let futureDate = new Date(now);
+        futureDate.setDate(now.getDate() + daysToAdd);
+        futureDate.setHours(23, 59, 59, 999);
+
+        const countdownDate = futureDate.getTime();
+
+        const x = setInterval(function () {
             const now = new Date().getTime();
             const distance = countdownDate - now;
 
@@ -114,37 +92,64 @@
     }
 </script>
 
+<!-- Show Countdown Timer Based on Product Type -->
+<!-- {% if product.tags contains 'Standard Products' %}
+    <div id="dealCountdownStandard" class="countdown"></div>
+    <script>
+        countdownTimer("dealCountdownStandard", 0); // Set countdown for 1 day
+    </script>
+    <div class="text-deal">🔥 Deal of the Day! 🔥</div>
+{% elsif product.tags contains 'Bundle Products' %}
+    <div id="dealCountdownBundle" class="countdown"></div>
+    <script>
+        countdownTimer("dealCountdownBundle", 3); // Set countdown for 3 days
+    </script>
+    <div class="text-deal">🔥 Limited Time Bundle Offer! 🔥</div>
+{% endif %} -->
 
-{% if product.tags contains 'Standard Products' %}
+<hr>
+
+{% if product.tags contains 'Standard Products' or product.tags contains 'Bundle Products' %}
 <div class="product-banner">
+
+    {% if product.tags contains 'Bundle Products' %}
+    <div class="deal-banner">Buy More Save More</div>
     <div class="original-price">
-        M.R.P.: <span class="price">₹ 1250</span>
+        M.R.P.: <span class="price">₹ 2500</span><br>
     </div>
-    <div class="price-section">
-        <span class="deal-price">₹ 1000.00*</span> <span class="discount">-20%</span>
-        <div class="discount-code">
-            <svg aria-hidden="true" focusable="false" class="hdt-icon hdt-icon-discount" width="20" height="20" viewBox="0 0 12 12">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M7 0h3a2 2 0 012 2v3a1 1 0 01-.3.7l-6 6a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4l6-6A1 1 0 017 0zm2 2a1 1 0 102 0 1 1 0 00-2 0z"
-                        fill="currentColor"></path>
-                </svg>
-            <span class="discount-code-text">*Use code NATURTINTFIRST1 on your first purchase</span>
-        </div>
+    {% endif %}
 
-        {% elsif product.tags contains 'Bundle Products' %}
-        <!-- Bundle Products Banner -->
-        <div class="product-banner">
-            <div class="deal-banner">Buy More Save More</div>
-
-            <div class="price-section">
-                <span class="discount">-5%</span>
-                <span class="currency-symbol">₹</span><span class="deal-price">2375</span>
-                <div class="original-price">
-                    M.R.P.: <span class="currency-symbol">₹</span><span class="strikethrough-price">2500</span>
-                </div>
-            </div>
-        </div>
-
+    {% if product.tags contains 'Standard Products' %}
+    <div class="original-price">
+        M.R.P.: <span class="price">₹ 1250</span><br>
+                {% if product.metafields.theme.show_discount != false %}
+        <span class="deal-price">₹ 1000*</span>
+        <span class="discount">-20%</span>
         {% endif %}
     </div>
+    {% endif %}
+
+    <hr>
+    <div class="price-section">
+        <div class="discount-code">
+            {% if product.metafields.theme.show_discount != false %}
+
+            <svg aria-hidden="true" focusable="false" class="hdt-icon hdt-icon-discount" width="20" height="20"
+                viewBox="0 0 12 12">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M7 0h3a2 2 0 012 2v3a1 1 0 01-.3.7l-6 6a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4l6-6A1 1 0 017 0zm2 2a1 1 0 102 0 1 1 0 00-2 0z"
+                    fill="currentColor"></path>
+            </svg>
+            {% endif %}
+
+            {% if product.tags contains 'Standard Products' %}
+            {% if product.metafields.theme.show_discount != false %}
+            <span class="discount-code-text">Use code <b>Naturtintfirst</b> & get 1N & 3N for <b>Rs 1000/-</b> on your first purchase</span>
+            {% endif %}
+            {% elsif product.tags contains 'Bundle Products' %}
+            <span class="discount-code-text">Use code <b>NaturtintCombo</b> & get 1N & 3N for <b>Rs 2000/-</b> on your first purchase</span>
+            {% endif %}
+        </div>
+    </div>
 </div>
+{% endif %}
