@@ -502,7 +502,7 @@ export default function Index() {
           min-width: 0;
         }
         .cf-sidebar {
-          width: 290px;
+          width: 299px;
           min-width: 180px;
           background: var(--cf-sidebar);
           border-right: 2px solid var(--cf-border);
@@ -569,7 +569,7 @@ export default function Index() {
 }
         .cf-editor-card {
           width: 100%;
-          max-width: 850px;
+          max-width: 1200px;
           background: var(--cf-card);
           border-radius: 2.5em;
           margin: 40px 0;
@@ -637,7 +637,7 @@ export default function Index() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 32px 21px 32px;
+          padding: 10px 24px 10px;
         }
         .cf-status-label {
           font-size: 1em;
