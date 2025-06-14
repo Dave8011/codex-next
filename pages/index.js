@@ -430,13 +430,7 @@ export default function Index() {
         onCreated={() => fetchFiles(currentPath)}
       />
 
-      {/* ...styles are the same as your current version... */}
-      <style jsx global>{`
-        /* ... keep your styles as before ... */
-       `}</style>
-    </div>
-  );
-}
+
       {/* ...styles are the same as your current version... */}
       <style jsx global>{`
  /* ===== THEME COLORS (Unique, Warm, Soft, NOT VS Code) ===== */
@@ -874,4 +868,8 @@ html, body {
   .cf-monaco-wrap {
     margin-left: 6px; margin-right: 6px;
   }
+}
+   `}</style>
+    </div>
+  );
 }
