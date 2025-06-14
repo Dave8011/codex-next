@@ -1,3 +1,7 @@
+
+// HOME PAGE
+
+
 import { useEffect, useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 
