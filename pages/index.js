@@ -17,7 +17,7 @@ function detectLanguage(filename = "") {
     md: "markdown", markdown: "markdown", py: "python", java: "java", php: "php", rb: "ruby",
     c: "c", h: "c", cpp: "cpp", cc: "cpp", cxx: "cpp", hpp: "cpp",
     go: "go", rs: "rust", sh: "shell", bash: "shell", xml: "xml",
-    yml: "yaml", yaml: "yaml", sql: "sql", swift: "swift"
+    yml: "yaml", yaml: "yaml", sql: "sql", swift: "swift", txt: "txt"
   };
   return map[ext] || "plaintext";
 }
