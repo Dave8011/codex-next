@@ -1,0 +1,69 @@
+<div class="custom-dropdown">
+  <div class="dropdown-header" onclick="toggleDropdown(this)">
+    <span class="dropdown-title">How It Works?</span>
+    <span class="dropdown-icon">+</span>
+  </div>
+  <div class="dropdown-content">
+    <p>This is the additional content that shows when you click the header. Add anything you want here.</p>
+  </div>
+  <div class="dropdown-header" onclick="toggleDropdown(this)">
+    <span class="dropdown-title">How Tp Use?</span>
+    <span class="dropdown-icon">+</span>
+  </div>
+  <div class="dropdown-content">
+    <p>This is the additional content that shows when you click the header. Add anything you want here.</p>
+  </div>
+  <div class="dropdown-header" onclick="toggleDropdown(this)">
+    <span class="dropdown-title">Your Header Title</span>
+    <span class="dropdown-icon">+</span>
+  </div>
+  <div class="dropdown-content">
+    <p>This is the additional content that shows when you click the header. Add anything you want here.</p>
+  </div>
+</div>
+
+<style>
+  .custom-dropdown {
+    font-family: 'Gloock', serif;
+    margin-top: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 0;
+  }
+
+  .dropdown-icon {
+    font-size: 28px;
+    transition: transform 0.3s ease;
+  }
+
+  .dropdown-header.active .dropdown-icon {
+    transform: rotate(45deg); /* + becomes × */
+  }
+
+  .dropdown-content {
+    display: none;
+    padding: 10px 0;
+    color: #133775;
+    font-size: 16px;
+  }
+
+  .dropdown-content.show {
+    display: block;
+  }
+</style>
+
+<script>
+  function toggleDropdown(el) {
+    el.classList.toggle('active');
+    const content = el.nextElementSibling;
+    content.classList.toggle('show');
+  }
+</script>
