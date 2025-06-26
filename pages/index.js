@@ -470,13 +470,12 @@ export default function Index() {
 
 /* --- Responsive/Pro Mobile Styles --- */
 @media (max-width: 600px) {
-  html, body, .cf-root, .cf-main, .cf-editor, .cf-editor-card {
+  .cf-root, .cf-main, .cf-editor, .cf-editor-card {
     width: 100vw !important;
     min-width: 0 !important;
     max-width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-sizing: border-box !important;
   }
   .cf-header {
     font-size: 1em !important;
@@ -514,13 +513,9 @@ export default function Index() {
     box-shadow: none !important;
     max-height: 48px !important;
     align-items: center !important;
-    transition: transform 0.22s;
-  }
-  .cf-sidebar-collapsed {
-    transform: translateX(-110vw) !important;
-    position: absolute !important;
-    z-index: 100;
-    background: var(--cf-sidebar);
+    background: var(--cf-sidebar) !important;
+    position: relative !important;
+    z-index: 10;
   }
   .cf-sidebar-title {
     font-size: 1em !important;
@@ -528,6 +523,37 @@ export default function Index() {
     display: flex;
     align-items: center;
   }
+  .cf-sidebar-menu {
+    display: inline-block !important;
+    cursor: pointer;
+    margin-right: 6px !important;
+    vertical-align: middle;
+  }
+  .cf-hamburger, .cf-hamburger:before, .cf-hamburger:after {
+    content: '';
+    display: block;
+    width: 22px;
+    height: 4px;
+    background: var(--cf-btn2);
+    border-radius: 2px;
+    margin: 4px 0;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .cf-hamburger {
+    position: relative;
+    height: 18px;
+    margin: 0;
+  }
+  .cf-hamburger:before {
+    position: absolute;
+    top: -7px;
+  }
+  .cf-hamburger:after {
+    position: absolute;
+    top: 7px;
+  }
+  .cf-sidebar-title-text { display: none !important; }
   .cf-sidebar-item {
     font-size: 0.98em !important;
     padding: 8px 8px !important;
@@ -541,6 +567,7 @@ export default function Index() {
     align-items: stretch !important;
     justify-content: flex-start !important;
     padding: 0 !important;
+    background: var(--cf-bg) !important;
   }
   .cf-editor-card {
     margin: 0 !important;
@@ -582,7 +609,6 @@ export default function Index() {
     flex: 1 1 32% !important;
     border-radius: 4px !important;
   }
-  /*--- Monaco Editor Fixes ---*/
   .cf-monaco-wrap,
   .monaco-editor,
   .monaco-editor .overflow-guard,
@@ -608,11 +634,11 @@ export default function Index() {
     width: 100vw !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    height: calc(100vh - 178px) !important; /* header+sidebar+topbar+statusbar+savebtn+gap */
+    height: calc(100vh - 178px) !important;
     max-height: 66vh !important;
     overflow: hidden !important;
     border-radius: 0 !important;
-    background: var(--cf-card);
+    background: var(--cf-card) !important;
   }
   .monaco-editor, .monaco-editor-background {
     min-height: 36vh !important;
@@ -628,7 +654,6 @@ export default function Index() {
     margin-bottom: 8px !important;
     border-radius: 8px !important;
   }
-  /* Remove extra bottom space */
   .cf-editor-card { padding-bottom: 0 !important; margin-bottom: 0 !important; }
 }
 /* End responsive/mobile styles */
