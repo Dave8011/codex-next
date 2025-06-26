@@ -858,45 +858,123 @@ html, body {
     margin: 20px 0 14px 18px;
   }
 }@media (max-width: 600px) {
+  html, body, .cf-root, .cf-main, .cf-editor, .cf-editor-card {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .cf-header {
+    font-size: 1em !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 9px !important;
+    border-radius: 0 !important;
+  }
+  .cf-logo {
+    font-size: 1.05em !important;
+    padding: 0 !important;
+    letter-spacing: 0.5px !important;
+  }
+  .cf-header-actions {
+    gap: 8px !important;
+  }
+  .cf-btn {
+    padding: 6px 11px !important;
+    font-size: 1em !important;
+    border-radius: 6px !important;
+  }
+  .cf-main {
+    flex-direction: column !important;
+    min-height: 0 !important;
+    min-width: 0 !important;
+  }
+  .cf-sidebar {
+    width: 100vw !important;
+    min-width: unset !important;
+    border-right: none !important;
+    border-bottom: 2px solid var(--cf-border) !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding-top: 0 !important;
+    box-shadow: none !important;
+    max-height: 48px !important;
+    align-items: center !important;
+  }
+  .cf-sidebar-title {
+    font-size: 1em !important;
+    margin: 10px 0 10px 10px !important;
+  }
+  .cf-sidebar-item {
+    font-size: 0.98em !important;
+    padding: 8px 8px !important;
+    border-radius: 0 13px 13px 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .cf-editor {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 100vw !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+  }
   .cf-editor-card {
     margin: 0 !important;
-    border-radius: 0.5em !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
     width: 100vw !important;
     max-width: 100vw !important;
     min-width: 0 !important;
     padding-bottom: 0 !important;
+    background: var(--cf-card) !important;
+    border: none !important;
   }
   .cf-editor-topbar, .cf-editor-statusbar {
-    padding-left: 4px !important;
-    padding-right: 4px !important;
+    padding: 7px 6px !important;
     flex-direction: column !important;
-    gap: 6px !important;
+    gap: 5px !important;
     align-items: stretch !important;
+    font-size: 0.98em !important;
+  }
+  .cf-filename {
+    word-break: break-all !important;
+    font-size: 1em !important;
+    padding: 0 !important;
+  }
+  .cf-lang-badge {
+    font-size: 0.85em !important;
+    margin-left: 7px !important;
+    padding: 2px 6px !important;
   }
   .cf-actionbar {
     flex-wrap: wrap !important;
-    gap: 4px !important;
+    gap: 3px !important;
     justify-content: flex-end !important;
   }
   .cf-action-btn {
     min-width: 36px !important;
     padding: 6px 0 !important;
     font-size: 1em !important;
-    flex: 1 1 30% !important;
+    flex: 1 1 32% !important;
+    border-radius: 4px !important;
   }
   .cf-monaco-wrap {
     margin: 0 !important;
     width: 100vw !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    height: 50vh !important;
-    max-height: 55vh !important;
+    height: calc(100vh - 252px) !important; /* header+sidebar+topbar+statusbar+savebtn+padding */
+    max-height: 60vh !important;
     overflow: hidden !important;
+    border-radius: 0 !important;
   }
   .monaco-editor, .monaco-editor-background {
-    min-height: 40vh !important;
-    max-height: 55vh !important;
+    min-height: 38vh !important;
+    max-height: 60vh !important;
+    width: 100vw !important;
   }
   .cf-save-btn {
     width: 100% !important;
@@ -905,10 +983,7 @@ html, body {
     padding: 12px 0 !important;
     position: static !important;
     margin-bottom: 8px !important;
-  }
-  .cf-filename {
-    word-break: break-all !important;
-    padding-right: 0 !important;
+    border-radius: 8px !important;
   }
 }
    `}</style>
