@@ -857,20 +857,45 @@ html, body {
   }
 }
 @media (max-width: 600px) {
-  .cf-header { font-size: 1em; min-height: 48px; height: 48px; }
-  .cf-logo { font-size: 1.01em; }
-  .cf-main { flex-direction: column; }
-  .cf-sidebar { min-width: unset; }
   .cf-editor-card {
-    margin: 12px 2vw 0 2vw;
-    border-radius: 0.7em;
+    margin: 6px 0 0 0;         /* Remove side margins for full width */
+    border-radius: 0.5em;
     box-shadow: none;
+    width: 100%;
   }
-  .cf-editor-topbar, .cf-editor-statusbar {
-    padding-left: 11px; padding-right: 11px;
+  .cf-editor-topbar,
+  .cf-editor-statusbar {
+    padding-left: 4px;
+    padding-right: 4px;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .cf-actionbar {
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+  .cf-action-btn {
+    min-width: 36px;
+    padding: 6px 0;
+    font-size: 1.15em;
+    flex: 1 1 30%;
   }
   .cf-monaco-wrap {
-    margin-left: 6px; margin-right: 6px;
+    margin: 0;
+    width: 100%;
+    min-width: 0;
+  }
+  .cf-save-btn {
+    width: 100%;
+    min-width: 0;
+    font-size: 1em;
+    padding: 12px 0;
+  }
+  .cf-filename {
+    word-break: break-all;    /* Prevent long filenames from overflowing */
+    padding-right: 0;
   }
 }
    `}</style>
