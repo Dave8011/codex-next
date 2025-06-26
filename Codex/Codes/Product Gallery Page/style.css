@@ -1,0 +1,335 @@
+/* ===========================
+   General Body & Typography
+   =========================== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+  max-width: 1500px;
+  margin: auto;
+}
+
+/* ===========================
+   Title Styling
+   =========================== */
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  color: #2d3748;
+  text-shadow: 1px 1px 1px #ccc;
+}
+
+/* ===========================
+   Sticky Filter Bar
+   =========================== */
+#controls {
+  position: sticky;
+  top: 0;
+  background: #f0f2f5;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 15px 0;
+}
+
+/* ===========================
+   Inputs and Dropdowns
+   =========================== */
+#searchBar, #categoryFilter, #listingTypeFilter {
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+#searchBar {
+  width: 75%;
+  max-width: 500px;
+}
+
+#categoryFilter, #listingTypeFilter {
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ===========================
+   Gallery Grid Layout
+   =========================== */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 10px;
+}
+
+/* ===========================
+   Product Card Styling
+   =========================== */
+.product {
+  background: white;
+  border: 1.5px solid #bbb;
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+  transition: transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.4s ease forwards;
+}
+.product:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+.product h2 {
+  font-size: 18px;
+  margin: 0 0 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+
+/* ===========================
+   Tag Row for Category & Listing Type
+   =========================== */
+.tag-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+/* ===========================
+   Category Tag
+   =========================== */
+.category-tag {
+  display: flex;
+  align-items: center;
+  background: #f7fafd;
+  color: #204ea8;
+  font-size: 0.93rem;
+  font-weight: 400;
+  border-radius: 99px;
+  padding: 2.5px 12px 2.5px 8px;
+  border: 1.3px solid #204ea8;
+  letter-spacing: 0.01em;
+  min-width: 0;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.category-tag::before {
+  content: "📂";
+  margin-right: 6px;
+  font-size: 1.07em;
+}
+
+/* ===========================
+   Listing Type Tag
+   =========================== */
+.listing-type-tag {
+  display: flex;
+  align-items: center;
+  background: #f7fdf7;
+  color: #2c922c;
+  font-size: 0.93rem;
+  font-weight: 400;
+  border-radius: 99px;
+  padding: 2.5px 12px 2.5px 8px;
+  border: 1.3px solid #2c922c;
+  letter-spacing: 0.01em;
+  min-width: 0;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listing-type-tag::before {
+  content: "🏷️";
+  margin-right: 6px;
+  font-size: 1.07em;
+}
+
+/* ===========================
+   Image Styling
+   =========================== */
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.image-wrapper {
+  position: relative;
+  flex: 0 1 120px;
+  cursor: pointer;
+  outline: none;
+}
+.image-wrapper img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease, box-shadow 0.2s;
+}
+.image-wrapper img:hover,
+.image-wrapper:focus img {
+  transform: scale(1.07);
+  box-shadow: 0 0 0 3px #204ea855;
+}
+.image-number {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* ===========================
+   Lightbox Styles
+   =========================== */
+.lightbox {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.lightbox.hidden {
+  display: none;
+}
+#lightbox-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  position: relative;
+  background: #fff;
+}
+#lightbox-close {
+  position: absolute;
+  top: 40px;
+  right: 60px;
+  font-size: 3rem;
+  color: #fff;
+  background: #222;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2100;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  outline: none;
+  border: none;
+  transition: background 0.2s;
+}
+#lightbox-close:focus, #lightbox-close:hover {
+  background: #444;
+}
+
+/* ===========================
+   Lightbox Navigation Arrows (HIDDEN by default)
+   Uncomment display: flex; if you want to show them.
+   =========================== */
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.82);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 2.3rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 2100;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.13);
+  align-items: center;
+  justify-content: center;
+  transition: background 0.17s;
+  display: none; /* HIDDEN by default */
+}
+.lightbox-arrow.left {
+  left: 32px;
+}
+.lightbox-arrow.right {
+  right: 32px;
+}
+.lightbox-arrow:active,
+.lightbox-arrow:focus {
+  background: #e0eaff;
+}
+
+/* ===========================
+   Swipe hint for mobile (optional, hidden by default)
+   =========================== */
+@media (pointer: coarse) {
+  #lightbox-img::after {
+    content: '';
+    /* To show a hint like "← Swipe →", replace above with: content: '← Swipe →'; */
+    display: none; /* Hidden by default */
+  }
+}
+
+/* ===========================
+   Empty state
+   =========================== */
+#emptyState {
+  margin: 80px auto 0 auto;
+  text-align: center;
+  color: #888;
+  display: none;
+  max-width: 420px;
+}
+
+/* ===========================
+   Fade-in Animation for Product Cards
+   =========================== */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===========================
+   Responsive Adjustments
+   =========================== */
+@media (max-width: 600px) {
+  #controls {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  #searchBar {
+    width: 100%;
+    max-width: none;
+  }
+  #gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===========================
+   NOTES:
+   - Lightbox navigation (arrows/swipe) is available via JS, but arrow buttons are hidden by default.
+   - To enable visual arrow buttons, set display:flex on .lightbox-arrow.
+   - Keyboard navigation (←/→) and swipe gestures will work as coded in JS.
+   - All style changes are integrated with your existing theme and structure.
+   =========================== */
