@@ -306,29 +306,31 @@ export default function Index() {
               <span className="cf-sidebar-label">..</span>
             </button>
           )}
-          {sidebarError ? (
-            <div className="cf-sidebar-empty">{sidebarError}</div>
-          ) : files.length > 0 ? (
-            files.map(file => (
-              <button
-                key={`${currentPath}/${file.name}`}
-                className={`cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}`}
-                onClick={() =>
-                  file.type === "folder"
-                    ? fetchFiles([currentPath, file.name].filter(Boolean).join("/"))
-                    : openFile(file.name)
-                }
-                aria-label={file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}`}
-              >
-                <span className="cf-sidebar-icon">
-                  {file.type === "folder" ? "📂" : "📄"}
-                </span>
-                <span className="cf-sidebar-label">{file.name}</span>
-              </button>
-            ))
-          ) : (
-            <div className="cf-sidebar-empty">No files</div>
-          )}
+            {sidebarError ? (
+    <div className="cf-sidebar-empty">{sidebarError}</div>
+  ) : files.length > 0 ? (
+    files
+      .filter(file => file.name !== '.gitkeep') // <-- Correct placement
+      .map(file => (
+        <button
+          key={`${currentPath}/${file.name}`}
+          className={`cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}`}
+          onClick={() =>
+            file.type === "folder"
+              ? fetchFiles([currentPath, file.name].filter(Boolean).join("/"))
+              : openFile(file.name)
+          }
+          aria-label={file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}`}
+        >
+          <span className="cf-sidebar-icon">
+            {file.type === "folder" ? "📂" : "📄"}
+          </span>
+          <span className="cf-sidebar-label">{file.name}</span>
+        </button>
+      ))
+  ) : (
+    <div className="cf-sidebar-empty">No files</div>
+  )}
         </nav>
 
         {/* Editor */}
@@ -855,47 +857,58 @@ html, body {
   .cf-sidebar-title {
     margin: 20px 0 14px 18px;
   }
-}
-@media (max-width: 600px) {
+}@media (max-width: 600px) {
   .cf-editor-card {
-    margin: 6px 0 0 0;         /* Remove side margins for full width */
-    border-radius: 0.5em;
-    box-shadow: none;
-    width: 100%;
+    margin: 0 !important;
+    border-radius: 0.5em !important;
+    box-shadow: none !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    padding-bottom: 0 !important;
   }
-  .cf-editor-topbar,
-  .cf-editor-statusbar {
-    padding-left: 4px;
-    padding-right: 4px;
-    flex-direction: column;
-    gap: 6px;
-    align-items: stretch;
+  .cf-editor-topbar, .cf-editor-statusbar {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    align-items: stretch !important;
   }
   .cf-actionbar {
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: flex-end;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    justify-content: flex-end !important;
   }
   .cf-action-btn {
-    min-width: 36px;
-    padding: 6px 0;
-    font-size: 1.15em;
-    flex: 1 1 30%;
+    min-width: 36px !important;
+    padding: 6px 0 !important;
+    font-size: 1em !important;
+    flex: 1 1 30% !important;
   }
   .cf-monaco-wrap {
-    margin: 0;
-    width: 100%;
-    min-width: 0;
+    margin: 0 !important;
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    height: 50vh !important;
+    max-height: 55vh !important;
+    overflow: hidden !important;
+  }
+  .monaco-editor, .monaco-editor-background {
+    min-height: 40vh !important;
+    max-height: 55vh !important;
   }
   .cf-save-btn {
-    width: 100%;
-    min-width: 0;
-    font-size: 1em;
-    padding: 12px 0;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 1em !important;
+    padding: 12px 0 !important;
+    position: static !important;
+    margin-bottom: 8px !important;
   }
   .cf-filename {
-    word-break: break-all;    /* Prevent long filenames from overflowing */
-    padding-right: 0;
+    word-break: break-all !important;
+    padding-right: 0 !important;
   }
 }
    `}</style>
