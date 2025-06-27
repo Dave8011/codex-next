@@ -635,7 +635,7 @@ html, body {
   font-size: 1.24em;
   margin-right: 18px;
 }
-.cf-up { background: var(--cf-card) !important; color: var(--cf-btn2) !important; }
+.cf-up { background: var(--cf-card) ; color: var(--cf-btn2) ; }
 
 .cf-editor {
   flex: 1;
@@ -877,158 +877,158 @@ html, body {
 
 @media (max-width: 600px) {
   html, body, .cf-root, .cf-main {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    min-width: 0 !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+    width: 100vw ;
+    max-width: 100vw ;
+    min-width: 0 ;
+    height: 100vh ;
+    max-height: 100vh ;
+    min-height: 0 ;
+    margin: 0 ;
+    padding: 0 ;
+    box-sizing: border-box ;
+    overflow: hidden ;
   }
   .cf-header {
-    font-size: 1em !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    padding: 0 9px !important;
-    border-radius: 0 !important;
+    font-size: 1em ;
+    height: 44px ;
+    min-height: 44px ;
+    padding: 0 9px ;
+    border-radius: 0 ;
   }
   .cf-logo {
-    font-size: 1.05em !important;
-    padding: 0 !important;
-    letter-spacing: 0.5px !important;
+    font-size: 1.05em ;
+    padding: 0 ;
+    letter-spacing: 0.5px ;
   }
   .cf-header-actions {
-    gap: 8px !important;
+    gap: 8px ;
   }
   .cf-btn {
-    padding: 6px 11px !important;
-    font-size: 1em !important;
-    border-radius: 6px !important;
+    padding: 6px 11px ;
+    font-size: 1em ;
+    border-radius: 6px ;
   }
   .cf-main {
-    flex-direction: column !important;
-    min-height: 0 !important;
-    min-width: 0 !important;
-    height: calc(100vh - 44px) !important; /* leave space for header */
-    overflow: hidden !important;
+    flex-direction: column ;
+    min-height: 0 ;
+    min-width: 0 ;
+    height: calc(100vh - 44px) ; /* leave space for header */
+    overflow: hidden ;
   }
   .cf-sidebar {
-    width: 100vw !important;
-    min-width: unset !important;
-    border-right: none !important;
-    border-bottom: 2px solid var(--cf-border) !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    padding-top: 0 !important;
-    box-shadow: none !important;
-    max-height: 48px !important;
-    align-items: center !important;
-    position: static !important;
+    width: 100vw ;
+    min-width: unset ;
+    border-right: none ;
+    border-bottom: 2px solid var(--cf-border) ;
+    flex-direction: row ;
+    overflow-x: auto ;
+    padding-top: 0 ;
+    box-shadow: none ;
+    max-height: 48px ;
+    align-items: center ;
+    position: static ;
   }
   .cf-sidebar-title {
-    font-size: 1em !important;
-    margin: 10px 0 10px 10px !important;
+    font-size: 1em ;
+    margin: 10px 0 10px 10px ;
   }
   .cf-sidebar-item {
-    font-size: 0.98em !important;
-    padding: 8px 8px !important;
-    border-radius: 0 13px 13px 0 !important;
-    margin-bottom: 0 !important;
+    font-size: 0.98em ;
+    padding: 8px 8px ;
+    border-radius: 0 13px 13px 0 ;
+    margin-bottom: 0 ;
   }
   .cf-editor {
-    flex: 1 1 auto !important;
-    width: 100vw !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    height: calc(100vh - 44px - 48px) !important; /* header + sidebar */
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    padding: 0 !important;
-    overflow: hidden !important;
+    flex: 1 1 auto ;
+    width: 100vw ;
+    min-width: 0 ;
+    min-height: 0 ;
+    height: calc(100vh - 44px - 48px) ; /* header + sidebar */
+    display: flex ;
+    flex-direction: column ;
+    align-items: stretch ;
+    justify-content: flex-start ;
+    padding: 0 ;
+    overflow: hidden ;
   }
   .cf-editor-card {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 auto !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    min-width: 0 !important;
-    height: 100% !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding-bottom: 0 !important;
-    background: var(--cf-card) !important;
-    border: none !important;
-    overflow: hidden !important;
+    display: flex ;
+    flex-direction: column ;
+    flex: 1 1 auto ;
+    width: 100vw ;
+    max-width: 100vw ;
+    min-width: 0 ;
+    height: 100% ;
+    margin: 0 ;
+    border-radius: 0 ;
+    box-shadow: none ;
+    padding-bottom: 0 ;
+    background: var(--cf-card) ;
+    border: none ;
+    overflow: hidden ;
   }
   .cf-editor-topbar,
   .cf-editor-statusbar {
-    padding: 7px 6px !important;
-    flex-direction: column !important;
-    gap: 5px !important;
-    align-items: stretch !important;
-    font-size: 0.98em !important;
+    padding: 7px 6px ;
+    flex-direction: column ;
+    gap: 5px ;
+    align-items: stretch ;
+    font-size: 0.98em ;
   }
   .cf-filename {
-    word-break: break-all !important;
-    font-size: 1em !important;
-    padding: 0 !important;
+    word-break: break-all ;
+    font-size: 1em ;
+    padding: 0 ;
   }
   .cf-lang-badge {
-    font-size: 0.85em !important;
-    margin-left: 7px !important;
-    padding: 2px 6px !important;
+    font-size: 0.85em ;
+    margin-left: 7px ;
+    padding: 2px 6px ;
   }
   .cf-actionbar {
-    flex-wrap: wrap !important;
-    gap: 3px !important;
-    justify-content: flex-end !important;
+    flex-wrap: wrap ;
+    gap: 3px ;
+    justify-content: flex-end ;
   }
   .cf-action-btn {
-    min-width: 36px !important;
-    padding: 6px 0 !important;
-    font-size: 1em !important;
-    flex: 1 1 32% !important;
-    border-radius: 4px !important;
+    min-width: 36px ;
+    padding: 6px 0 ;
+    font-size: 1em ;
+    flex: 1 1 32% ;
+    border-radius: 4px ;
   }
   .cf-monaco-wrap {
-    flex: 1 1 auto !important;
-    width: 100vw !important;
-    min-width: 0 !important;
-    max-width: 100vw !important;
-    height: 100% !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background: none !important;
-    overflow: hidden !important;
+    flex: 1 1 auto ;
+    width: 100vw ;
+    min-width: 0 ;
+    max-width: 100vw ;
+    height: 100% ;
+    margin: 0 ;
+    border-radius: 0 ;
+    box-shadow: none ;
+    background: none ;
+    overflow: hidden ;
   }
   .monaco-editor,
   .monaco-editor-background,
   .monaco-editor .overflow-guard {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
+    width: 100% ;
+    height: 100% ;
+    min-height: 0 ;
+    max-height: 100% ;
   }
   .cf-editor-empty {
-    min-height: 120px !important;
-    font-size: 1.1em !important;
+    min-height: 120px ;
+    font-size: 1.1em ;
   }
   .cf-save-btn {
-    width: 100% !important;
-    min-width: 0 !important;
-    font-size: 1em !important;
-    padding: 12px 0 !important;
-    position: static !important;
-    margin-bottom: 0 !important;
-    border-radius: 8px !important;
+    width: 100% ;
+    min-width: 0 ;
+    font-size: 1em ;
+    padding: 12px 0 ;
+    position: static ;
+    margin-bottom: 0 ;
+    border-radius: 8px ;
   }
 }
    ` } </style> 
