@@ -347,7 +347,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                         { /* Editor */ } 
                         <section className = "cf-editor" > 
                         {fileContent ? ( <div className = "cf-editor-card" >
-                              <div className="cf-editor-topbar">{/* ...toolbar... */}</div>
+                                <div className = "cf-editor-topbar" >
                                 <span className = "cf-filename" > { fileContent.name } 
                                 <span className = "cf-lang-badge" > { detectLanguage(fileContent.name) } </span> 
                                 </span> <div className = "cf-actionbar" >
@@ -895,11 +895,24 @@ html, body {
     padding: 0 9px !important;
     border-radius: 0 !important;
   }
+  .cf-logo {
+    font-size: 1.05em !important;
+    padding: 0 !important;
+    letter-spacing: 0.5px !important;
+  }
+  .cf-header-actions {
+    gap: 8px !important;
+  }
+  .cf-btn {
+    padding: 6px 11px !important;
+    font-size: 1em !important;
+    border-radius: 6px !important;
+  }
   .cf-main {
     flex-direction: column !important;
     min-height: 0 !important;
     min-width: 0 !important;
-    height: calc(100vh - 44px) !important; /* header height */
+    height: calc(100vh - 44px) !important; /* leave space for header */
     overflow: hidden !important;
   }
   .cf-sidebar {
@@ -909,9 +922,21 @@ html, body {
     border-bottom: 2px solid var(--cf-border) !important;
     flex-direction: row !important;
     overflow-x: auto !important;
+    padding-top: 0 !important;
+    box-shadow: none !important;
     max-height: 48px !important;
     align-items: center !important;
     position: static !important;
+  }
+  .cf-sidebar-title {
+    font-size: 1em !important;
+    margin: 10px 0 10px 10px !important;
+  }
+  .cf-sidebar-item {
+    font-size: 0.98em !important;
+    padding: 8px 8px !important;
+    border-radius: 0 13px 13px 0 !important;
+    margin-bottom: 0 !important;
   }
   .cf-editor {
     flex: 1 1 auto !important;
@@ -942,28 +967,47 @@ html, body {
     border: none !important;
     overflow: hidden !important;
   }
-  .cf-editor-topbar {
-    flex: 0 0 auto !important;
+  .cf-editor-topbar,
+  .cf-editor-statusbar {
     padding: 7px 6px !important;
+    flex-direction: column !important;
     gap: 5px !important;
     align-items: stretch !important;
     font-size: 0.98em !important;
-    background: transparent !important;
-    z-index: 2;
+  }
+  .cf-filename {
+    word-break: break-all !important;
+    font-size: 1em !important;
+    padding: 0 !important;
+  }
+  .cf-lang-badge {
+    font-size: 0.85em !important;
+    margin-left: 7px !important;
+    padding: 2px 6px !important;
+  }
+  .cf-actionbar {
+    flex-wrap: wrap !important;
+    gap: 3px !important;
+    justify-content: flex-end !important;
+  }
+  .cf-action-btn {
+    min-width: 36px !important;
+    padding: 6px 0 !important;
+    font-size: 1em !important;
+    flex: 1 1 32% !important;
+    border-radius: 4px !important;
   }
   .cf-monaco-wrap {
     flex: 1 1 auto !important;
     width: 100vw !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    min-height: 0 !important;
+    height: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background: none !important;
     overflow: hidden !important;
-    height: auto !important;
-    z-index: 1;
   }
   .monaco-editor,
   .monaco-editor-background,
@@ -973,13 +1017,9 @@ html, body {
     min-height: 0 !important;
     max-height: 100% !important;
   }
-  .cf-editor-statusbar {
-    flex: 0 0 auto !important;
-    padding: 7px 6px !important;
-    align-items: stretch !important;
-    font-size: 0.98em !important;
-    background: transparent !important;
-    z-index: 2;
+  .cf-editor-empty {
+    min-height: 120px !important;
+    font-size: 1.1em !important;
   }
   .cf-save-btn {
     width: 100% !important;
@@ -990,7 +1030,7 @@ html, body {
     margin-bottom: 0 !important;
     border-radius: 8px !important;
   }
-}    
+}
    ` } </style> 
    </div>
      ); 
