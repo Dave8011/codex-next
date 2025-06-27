@@ -1045,6 +1045,7 @@ html {
     to { transform: none; opacity: 1; }
   }
 }
+}
 
    ` } </style> 
    </div>
