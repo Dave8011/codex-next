@@ -10,14 +10,7 @@ const MonacoEditor = dynamic(() =>
 function detectLanguage(filename = "") {
     const ext = filename.split(".").pop().toLowerCase();
     const map = {
-        js: "javascript",
-        jsx: "javascript",
-        ts: "typescript",
-        tsx: "typescript",
-        json: "json",
-        css: "css",
-        scss: "scss",
-        html: "html",
+        js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript", json: "json", css: "css", scss: "scss", html: "html",
         htm: "html",
         md: "markdown",
         markdown: "markdown",
