@@ -856,196 +856,203 @@ html, body {
 }
 
 /* RESPONSIVE */
-/* ===== POLISHED MOBILE/TABLET UX for Codex Panel ===== */
+/* ===== MOBILE RESPONSIVE STYLES (for Codex Panel) ===== */
 
-/* Larger tap targets, subtle active feedback */
-.cf-btn, .cf-action-btn, .cf-sidebar-item, .cf-save-btn, .cf-modal-create {
-  min-height: 44px;
-  min-width: 44px;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-tap-highlight-color: rgba(255,185,120,0.08);
-  transition: box-shadow 0.14s, background 0.16s, color 0.12s, scale 0.12s;
-}
-.cf-btn:active,
-.cf-action-btn:active,
-.cf-sidebar-item:active,
-.cf-save-btn:active,
-.cf-modal-create:active {
-  background: var(--cf-btn-hover, #ffe5f9);
-  color: var(--cf-card);
-  scale: 0.97;
-  box-shadow: 0 2px 10px #ffb86c28;
-}
+/* Small devices (phones, <730px) */
+@media (width: 730px) {
 
-/* Sidebar: sticky, horizontally scrollable, always on top on mobile */
-@media (max-width: 900px) {
+  .cf-header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 12px 2vw;
+    gap: 10px;
+    font-size: 1em;
+    min-height: unset;
+  }
+  .cf-logo {
+    font-size: 1.1em;
+    padding-bottom: 6px;
+  }
+  .cf-header-actions {
+    width: 100%;
+    gap: 9px;
+    justify-content: flex-end;
+  }
+
+  .cf-main {
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    height: unset;
+  }
+
   .cf-sidebar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    background: var(--cf-sidebar);
-    scrollbar-width: none;
-  }
-  .cf-sidebar::-webkit-scrollbar { display: none; }
-}
-
-/* Sidebar: highlight active/selected file/folder */
-.cf-sidebar-item[aria-current="page"],
-.cf-sidebar-item.active {
-  background: var(--cf-accent2, #ffd699);
-  color: var(--cf-bg);
-  font-weight: bold;
-  box-shadow: 0 3px 18px #ffb86c22;
-}
-
-/* Sidebar: scroll to active on file open (JS required, see note below) */
-
-/* Editor and modals: prevent horizontal scroll, fit viewport (mobile) */
-@media (max-width: 730px) {
-  html, body {
+    width: 100vw;
+    min-width: 0;
     max-width: 100vw;
-    overflow-x: hidden;
-    font-size: 16px;
+    border-right: none;
+    border-bottom: 2px solid var(--cf-border);
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 0 0 0;
+    box-shadow: none;
+    z-index: 2;
+    background: var(--cf-sidebar);
   }
-  .cf-editor, .cf-editor-card, .cf-monaco-wrap {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    min-width: 0 !important;
-    overflow-x: hidden;
+  .cf-sidebar-title {
+    display: none;
+  }
+  .cf-sidebar-empty {
+    font-size: 0.97em;
+    margin: 0 10px;
+    padding: 8px 0;
+  }
+  .cf-sidebar-item {
+    flex-direction: column;
+    font-size: 0.95em;
+    min-width: 60px;
+    padding: 9px 6px;
+    margin: 1px 2.5px 0 0;
+    border-radius: 13px;
+    align-items: center;
+    justify-content: center;
+  }
+  .cf-sidebar-icon {
+    margin: 0 0 2px 0;
+    font-size: 1.15em;
+  }
+  .cf-up {
+    font-size: 0.97em;
+    margin-left: 8px;
+    margin-right: 0;
+    min-width: 60px;
+  }
+
+  .cf-editor {
+    min-width: 0;
+    width: 100vw;
+    padding: 0;
+    justify-content: flex-start;
+    align-items: flex-start;
   }
   .cf-editor-card {
-    box-shadow: 0 8px 32px #0000001c;
-    border-radius: 0 0 18px 18px;
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0;
+  }
+  .cf-editor-topbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 9px 10px 9px;
+    font-size: 1em;
+  }
+  .cf-filename {
+    font-size: 1.05em;
+    padding: 0 6px 0 0;
+  }
+  .cf-lang-badge {
+    margin-left: 7px;
+    padding: 3px 7px;
+    font-size: 0.83em;
+  }
+  .cf-actionbar {
+    gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .cf-action-btn {
+    padding: 7px 9px;
+    font-size: 0.95em;
+    border-radius: 7px;
   }
   .cf-monaco-wrap {
-    height: 40vh !important;
+    margin: 0 3vw 0 3vw;
+    border-radius: 9px;
+    box-shadow: 0 2px 10px #ffb86c15;
+    height: 45vh !important;
+    min-height: 200px;
+    max-height: 52vw;
+  }
+  .cf-editor-statusbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 7px 8px 13px;
+    font-size: 0.97em;
+    align-items: flex-start;
+  }
+  .cf-status-label {
+    min-width: 0;
+  }
+  .cf-save-btn {
+    padding: 12px 0;
+    width: 99vw;
+    font-size: 1em;
+    border-radius: 9px;
+    margin-top: 5px;
+  }
+  .cf-editor-empty {
+    font-size: 1.05em;
     min-height: 180px;
-    border-radius: 8px;
   }
-}
+  .cf-editor-empty-icon {
+    font-size: 2.1em;
+    margin-bottom: 14px;
+  }
 
-/* Monaco: always fit, never overflow */
-.cf-monaco-wrap {
-  max-width: 100vw;
-  overflow: auto;
-  background: var(--cf-card);
-}
-
-/* Modal polish: tap background to close, visible close button, shadow */
-.cf-modal-bg {
-  background: #0007;
-  transition: background 0.23s;
-}
-.cf-modal {
-  box-shadow: 0 16px 40px #0004, 0 -2px 24px #ffb86c44;
-  will-change: transform, opacity;
-  animation: cf-fade-in 0.33s cubic-bezier(.4,0,.2,1);
-}
-.cf-modal-close {
-  top: 7px;
-  right: 13px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
-  font-size: 2.2em;
-  color: var(--cf-muted);
-  z-index: 12;
-  background: none;
-  outline: none;
-}
-.cf-modal-close:active { color: var(--cf-btn-hover); }
-@media (max-width: 730px) {
+  /* Modal styles for mobile */
+  .cf-modal-bg {
+    align-items: flex-end;
+    padding-bottom: 0;
+  }
   .cf-modal {
-    min-height: 50vh;
-    box-shadow: 0 -2px 32px #ffb86c55, 0 3px 10px #0005;
+    width: 100vw !important;
+    max-width: 100vw;
+    min-width: 0;
     border-radius: 1.5em 1.5em 0 0;
-    padding-bottom: max(8vw, 32px);
+    padding: 30px 6vw 20px 6vw;
+    box-shadow: 0 -2px 24px #ffb86c44;
+    border-width: 2.5px 0 0 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: unset;
+    right: unset;
+    z-index: 999;
+    animation: cf-fade-in 0.36s cubic-bezier(.4,0,.2,1);
+    transition: transform 0.21s;
+  }
+  .cf-modal-close {
+    top: 9px;
+    right: 11px;
+    font-size: 2em;
+  }
+  .cf-modal-title {
+    font-size: 1.07em;
+    margin-bottom: 12px;
+    gap: 7px;
+  }
+  .cf-modal-select,
+  .cf-modal-input,
+  .cf-modal-textarea {
+    font-size: 1em;
+    padding: 9px 9px;
+    margin-bottom: 10px;
+  }
+  .cf-modal-create {
+    font-size: 1em;
+    padding: 12px 0;
+    border-radius: 10px;
+    margin-top: 5px;
   }
 }
 
-/* Smooth transitions for all major panels */
-.cf-header, .cf-sidebar, .cf-editor-card, .cf-modal {
-  transition: all 0.22s cubic-bezier(.4,0,.2,1);
-}
 
-/* Hide scrollbars by default, show on scroll (mobile/tablet) */
-.cf-sidebar, .cf-main, .cf-monaco-wrap {
-  scrollbar-width: thin;
-  scrollbar-color: var(--cf-border) transparent;
-}
-.cf-sidebar:hover, .cf-main:hover, .cf-monaco-wrap:hover {
-  scrollbar-width: auto;
-}
-.cf-sidebar::-webkit-scrollbar, .cf-main::-webkit-scrollbar, .cf-monaco-wrap::-webkit-scrollbar {
-  height: 7px;
-  width: 6px;
-  background: transparent;
-}
-.cf-sidebar::-webkit-scrollbar-thumb, .cf-main::-webkit-scrollbar-thumb, .cf-monaco-wrap::-webkit-scrollbar-thumb {
-  background: var(--cf-border);
-  border-radius: 8px;
-}
-
-/* Font scaling for legibility */
-html {
-  font-size: clamp(15px, 2.5vw, 18px);
-}
-@media (max-width: 450px) {
-  html { font-size: 16px; }
-  .cf-modal, .cf-editor-topbar, .cf-sidebar-item { font-size: 0.97em; }
-}
-
-/* Prevent accidental tap on background (modal) */
-.cf-modal-bg {
-  cursor: pointer;
-}
-.cf-modal {
-  cursor: default;
-}
-.cf-modal-bg > .cf-modal {
-  pointer-events: auto;
-}
-.cf-modal-bg > *:not(.cf-modal) {
-  pointer-events: none;
-}
-
-/* Touch-friendly: increase hit area for close button on modal */
-.cf-modal-close {
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 8px;
-  border-radius: 50%;
-}
-
-/* Optional: Add focus ring for accessibility */
-.cf-btn:focus, .cf-action-btn:focus, .cf-save-btn:focus, .cf-modal-create:focus, .cf-modal-close:focus {
-  outline: 3px solid var(--cf-btn-hover, #ffb3e1);
-  outline-offset: 1px;
-}
-
-/* Subtle button hover on touch devices (optional) */
-@media (hover: none) and (pointer: coarse) {
-  .cf-btn:hover, .cf-action-btn:hover, .cf-sidebar-item:hover, .cf-modal-create:hover {
-    filter: brightness(1.07);
-  }
-}
-
-/* Animation for sidebar slide-in (mobile) */
-@media (max-width: 900px) {
-  .cf-sidebar {
-    animation: cf-slide-x-in 0.26s cubic-bezier(.4,0,.2,1);
-  }
-  @keyframes cf-slide-x-in {
-    from { transform: translateX(-100vw); opacity: 0; }
-    to { transform: none; opacity: 1; }
-  }
-}
-}
 
    ` } </style> 
    </div>
