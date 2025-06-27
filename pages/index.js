@@ -856,8 +856,290 @@ html, body {
 }
 
 /* RESPONSIVE */
+/* ===== MOBILE RESPONSIVE STYLES (for Codex Panel) ===== */
 
+/* Small devices (phones, <730px) */
+@media (max-width: 730px) {
 
+  .cf-header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 12px 2vw;
+    gap: 10px;
+    font-size: 1em;
+    min-height: unset;
+  }
+  .cf-logo {
+    font-size: 1.1em;
+    padding-bottom: 6px;
+  }
+  .cf-header-actions {
+    width: 100%;
+    gap: 9px;
+    justify-content: flex-end;
+  }
+
+  .cf-main {
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    height: unset;
+  }
+
+  .cf-sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    border-right: none;
+    border-bottom: 2px solid var(--cf-border);
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 0 0 0;
+    box-shadow: none;
+    z-index: 2;
+    background: var(--cf-sidebar);
+  }
+  .cf-sidebar-title {
+    display: none;
+  }
+  .cf-sidebar-empty {
+    font-size: 0.97em;
+    margin: 0 10px;
+    padding: 8px 0;
+  }
+  .cf-sidebar-item {
+    flex-direction: column;
+    font-size: 0.95em;
+    min-width: 60px;
+    padding: 9px 6px;
+    margin: 1px 2.5px 0 0;
+    border-radius: 13px;
+    align-items: center;
+    justify-content: center;
+  }
+  .cf-sidebar-icon {
+    margin: 0 0 2px 0;
+    font-size: 1.15em;
+  }
+  .cf-up {
+    font-size: 0.97em;
+    margin-left: 8px;
+    margin-right: 0;
+    min-width: 60px;
+  }
+
+  .cf-editor {
+    min-width: 0;
+    width: 100vw;
+    padding: 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .cf-editor-card {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0;
+  }
+  .cf-editor-topbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 9px 10px 9px;
+    font-size: 1em;
+  }
+  .cf-filename {
+    font-size: 1.05em;
+    padding: 0 6px 0 0;
+  }
+  .cf-lang-badge {
+    margin-left: 7px;
+    padding: 3px 7px;
+    font-size: 0.83em;
+  }
+  .cf-actionbar {
+    gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .cf-action-btn {
+    padding: 7px 9px;
+    font-size: 0.95em;
+    border-radius: 7px;
+  }
+  .cf-monaco-wrap {
+    margin: 0 3vw 0 3vw;
+    border-radius: 9px;
+    box-shadow: 0 2px 10px #ffb86c15;
+    height: 45vh !important;
+    min-height: 200px;
+    max-height: 52vw;
+  }
+  .cf-editor-statusbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 7px 8px 13px;
+    font-size: 0.97em;
+    align-items: flex-start;
+  }
+  .cf-status-label {
+    min-width: 0;
+  }
+  .cf-save-btn {
+    padding: 12px 0;
+    width: 99vw;
+    font-size: 1em;
+    border-radius: 9px;
+    margin-top: 5px;
+  }
+  .cf-editor-empty {
+    font-size: 1.05em;
+    min-height: 180px;
+  }
+  .cf-editor-empty-icon {
+    font-size: 2.1em;
+    margin-bottom: 14px;
+  }
+
+  /* Modal styles for mobile */
+  .cf-modal-bg {
+    align-items: flex-end;
+    padding-bottom: 0;
+  }
+  .cf-modal {
+    width: 100vw !important;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 1.5em 1.5em 0 0;
+    padding: 30px 6vw 20px 6vw;
+    box-shadow: 0 -2px 24px #ffb86c44;
+    border-width: 2.5px 0 0 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: unset;
+    right: unset;
+    z-index: 999;
+    animation: cf-fade-in 0.36s cubic-bezier(.4,0,.2,1);
+    transition: transform 0.21s;
+  }
+  .cf-modal-close {
+    top: 9px;
+    right: 11px;
+    font-size: 2em;
+  }
+  .cf-modal-title {
+    font-size: 1.07em;
+    margin-bottom: 12px;
+    gap: 7px;
+  }
+  .cf-modal-select,
+  .cf-modal-input,
+  .cf-modal-textarea {
+    font-size: 1em;
+    padding: 9px 9px;
+    margin-bottom: 10px;
+  }
+  .cf-modal-create {
+    font-size: 1em;
+    padding: 12px 0;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+}
+
+/* Tablets (portrait: 601-900px) */
+@media (max-width: 900px) and (min-width: 601px) {
+  .cf-header {
+    font-size: 1.07em;
+    padding: 10px 2vw;
+  }
+  .cf-main {
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+  .cf-sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    border-right: none;
+    border-bottom: 2px solid var(--cf-border);
+    flex-direction: row;
+    overflow-x: auto;
+    box-shadow: none;
+    z-index: 2;
+  }
+  .cf-sidebar-title {
+    display: none;
+  }
+  .cf-sidebar-item {
+    min-width: 70px;
+    padding: 11px 12px;
+    font-size: 1em;
+    border-radius: 15px;
+  }
+  .cf-editor,
+  .cf-editor-card {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+  .cf-monaco-wrap {
+    margin: 0 2vw 0 2vw;
+    border-radius: 13px;
+    height: 55vh !important;
+    min-height: 240px;
+    max-height: 55vw;
+  }
+  .cf-editor-statusbar {
+    flex-direction: row;
+    gap: 13px;
+    font-size: 1em;
+    padding: 10px 12px 13px;
+  }
+  .cf-save-btn {
+    padding: 12px 22px;
+    width: unset;
+    font-size: 1em;
+    border-radius: 9px;
+  }
+  .cf-modal {
+    width: 96vw !important;
+    max-width: 96vw;
+    min-width: 0;
+    border-radius: 1.5em;
+    padding: 38px 4vw 23px 4vw;
+    box-shadow: 0 2px 24px #ffb86c33;
+    left: 2vw;
+    right: 2vw;
+  }
+}
+
+/* Hide scrollbars, optional but nice for mobile */
+.cf-sidebar,
+.cf-main {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cf-border) transparent;
+}
+.cf-sidebar::-webkit-scrollbar,
+.cf-main::-webkit-scrollbar {
+  width: 5px !important;
+  background: transparent;
+}
+.cf-sidebar::-webkit-scrollbar-thumb,
+.cf-main::-webkit-scrollbar-thumb {
+  background: var(--cf-border);
+  border-radius: 6px;
+}
+}
 
    ` } </style> 
    </div>
