@@ -137,9 +137,9 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
 
     if (!show) return null;
 
-    return ( <div className = "cf-modal-bg"
-            role = "dialog"
-            aria-modal = "true" >
+    return ( 
+        <div className = "cf-modal-bg" role = "dialog"
+            aria-modal = "true"   </div>
             <div className = "cf-modal" >
             <button onClick = { onClose }
             className = "cf-modal-close"
@@ -159,8 +159,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
             </select> { /* [EXT PATCH] Name+extension input row for files */ } 
             { type === "file" ? ( <
                     >
-                    <
-                    div style = {
+                    <div style = {
                         { display: "flex", gap: 8, marginBottom: 8 } } >
                     <
                     input type = "text"
@@ -212,7 +211,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                     aria-label = "File content" />
                 )
             } {
-                error && < div className = "cf-modal-error" > { error } 
+                error && <div className = "cf-modal-error" > { error } 
                 </div>} 
                 <button onClick = { handleCreate }
                 disabled = { loading }
