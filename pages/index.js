@@ -856,24 +856,7 @@ html, body {
 }
 
 /* RESPONSIVE */
-/* RESPONSIVE DESIGN FIXES */
-@media (max-width: 900px) {
-  .cf-main {
-    flex-direction: column;
-  }
-  .cf-sidebar {
-    width: 100%;
-    min-width: unset;
-    border-right: none;
-    border-bottom: 2px solid var(--cf-border);
-    flex-direction: row;
-    overflow-x: auto;
-    padding-top: 0;
-  }
-  .cf-sidebar-title {
-    margin: 20px 0 14px 18px;
-  }
-}
+
 
 
    ` } </style> 
