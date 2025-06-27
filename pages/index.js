@@ -11,39 +11,17 @@ function detectLanguage(filename = "") {
     const ext = filename.split(".").pop().toLowerCase();
     const map = {
         js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript", json: "json", css: "css", scss: "scss", html: "html",
-        htm: "html",
-        md: "markdown",
-        markdown: "markdown",
-        py: "python",
-        java: "java",
-        php: "php",
-        rb: "ruby",
-        c: "c",
-        h: "c",
-        cpp: "cpp",
-        cc: "cpp",
-        cxx: "cpp",
-        hpp: "cpp",
-        go: "go",
-        rs: "rust",
-        sh: "shell",
-        bash: "shell",
-        xml: "xml",
-        yml: "yaml",
-        yaml: "yaml",
-        sql: "sql",
-        swift: "swift",
-        txt: "txt"
+        htm: "html", md: "markdown", markdown: "markdown", py: "python", java: "java", php: "php", rb: "ruby", c: "c", h: "c", cpp: "cpp",
+        cc: "cpp", cxx: "cpp", hpp: "cpp", go: "go", rs: "rust", sh: "shell", bash: "shell", xml: "xml", yml: "yaml", yaml: "yaml",
+        sql: "sql", swift: "swift", txt: "txt"
     };
     return map[ext] || "plaintext";
 }
-
 // [EXTPATCH] -- Supported file extensions for dropdown
 const FILE_EXTENSIONS = [
     "js", "jsx", "ts", "tsx", "json", "css", "scss", "html", "md", "py", "java",
     "php", "rb", "c", "cpp", "go", "rs", "sh", "xml", "yml", "yaml", "sql", "swift", "txt"
 ];
-
 // Get parent folder from a path
 function parentPath(path) {
     if (!path) return "";
@@ -51,7 +29,6 @@ function parentPath(path) {
     parts.pop();
     return parts.join("/");
 }
-
 // Theme management
 function useTheme() {
     const [theme, setTheme] = useState(() =>
@@ -63,7 +40,6 @@ function useTheme() {
     }, [theme]);
     return [theme, setTheme];
 }
-
 // Modal for creating files/folders
 function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
     const [name, setName] = useState("");
@@ -73,7 +49,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
     const [error, setError] = useState("");
     // [EXTPATCH] extension state, default to 'js'
     const [extension, setExtension] = useState("js");
-
     useEffect(() => {
         if (show) {
             setName("");
@@ -83,7 +58,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
             setExtension("js"); // [EXTPATCH] reset extension
         }
     }, [show]);
-
     // [EXTPATCH] handle name change and auto-select extension
     const handleNameChange = (e) => {
         const val = e.target.value;
@@ -92,7 +66,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
         const ext = val.split(".").length > 1 ? val.split(".").pop().toLowerCase() : "";
         if (FILE_EXTENSIONS.includes(ext)) setExtension(ext);
     };
-
     const handleCreate = async() => {
         if (!name.trim()) {
             setError("Name is required.");
@@ -127,7 +100,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
               } catch (err) { setError("Network error.");}
         setLoading(false);
     };
-
     if (!show) return null;
  return (
   <div className="cf-modal-bg" role="dialog" aria-modal="true">
@@ -216,7 +188,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
     </div>
   </div>
 ); }
-
             export default function Index() {
                 const [theme, setTheme] = useTheme();
                 const [files, setFiles] = useState([]);
@@ -229,7 +200,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                 const [sidebarError, setSidebarError] = useState("");
                 const monacoRef = useRef(null);
                 const editorRef = useRef(null);
-
                 // Fetch files and folders
                 const fetchFiles = useCallback(async(subpath = "") => {
                     try {
@@ -245,7 +215,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                         setSidebarError("Unable to load files.");
                     }
                 }, []);
-
                 // Open file for editing
                 const openFile = useCallback(async(filename) => {
                     const fullPath = [currentPath, filename].filter(Boolean).join("/");
@@ -261,22 +230,19 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                         setSaveStatus("error");
                     }
                 }, [currentPath]);
-
                 useEffect(() => {
                     fetchFiles();
                     // eslint-disable-next-line
                 }, [fetchFiles]);
-
                 // Format code in Monaco
                 function handleFormat() {
                     if (editorRef.current) {
                         editorRef.current.getAction("editor.action.formatDocument").run();
                     }
                 }
-
                 // Copy file code to clipboard
                 const handleCopy = async() => {
-                    if (fileContent ? .content && navigator.clipboard) {
+                    if (fileContent ?.content && navigator.clipboard) {
                         try {
                             await navigator.clipboard.writeText(fileContent.content);
                             setCopyStatus("Copied!");
@@ -287,11 +253,9 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                         }
                     }
                 };
-
                 // THEME COLORS: unique, warm, soft, not like VS Code
                 // SIDEBAR: vertical file/folder navigation with large icons, animated transitions
                 // EDITOR: rounded glass panel, floating action bar, accent gradient, Monaco Editor
-
                 return ( <div className = "cf-root" > { /* Header */ } 
                         <header className = "cf-header" >
                         <span className = "cf-logo" > ⮜⮞Codex Panel </span> 
@@ -308,7 +272,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                             </button> 
                         </div> 
                         </header>
-
                         <main className = "cf-main" > { /* Sidebar */ } 
                         < nav className = "cf-sidebar"
                         aria-label = "File navigation" >
@@ -343,7 +306,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                             ) : ( <div className = "cf-sidebar-empty" > No files </div>
                             )
                         } </nav>
-
                         { /* Editor */ } 
                         <section className = "cf-editor" > 
                         {fileContent ? ( <div className = "cf-editor-card" >
@@ -447,8 +409,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
                                 onCreated = {
                                     () => fetchFiles(currentPath) }
                                 />
-
-
                                 { /* ...styles are the same as your current version... */ } 
                                 <style jsx global > 
 { `
@@ -512,7 +472,6 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
   --cf-lang-bg: #14161c;
   --cf-shadow: 0 3px 24px 0 #3f7fff36;
 }
-
 html, body {
   margin: 0;
   padding: 0;
@@ -578,7 +537,6 @@ html, body {
 .cf-btn.cf-new-btn:hover {
   background: var(--cf-btn-hover);
 }
-
 .cf-main {
   flex: 1;
   display: flex;
@@ -758,7 +716,6 @@ html, body {
   margin-bottom: 25px;
   opacity: 0.7;
 }
-
 /* MODAL */
 .cf-modal-bg {
   position: fixed;
@@ -856,10 +813,7 @@ html, body {
 }
 
 /* RESPONSIVE */
-/* ===== MOBILE RESPONSIVE STYLES (for Codex Panel) ===== */
-
-/* Small devices (phones, <730px) */
-@media (width: 730px) {
+@media (max-width: 730px) {
 
   .cf-header {
     flex-direction: column;
@@ -879,14 +833,12 @@ html, body {
     gap: 9px;
     justify-content: flex-end;
   }
-
   .cf-main {
     flex-direction: column;
     min-height: 0;
     min-width: 0;
     height: unset;
   }
-
   .cf-sidebar {
     width: 100vw;
     min-width: 0;
@@ -928,7 +880,6 @@ html, body {
     margin-right: 0;
     min-width: 60px;
   }
-
   .cf-editor {
     min-width: 0;
     width: 100vw;
@@ -1004,7 +955,6 @@ html, body {
     font-size: 2.1em;
     margin-bottom: 14px;
   }
-
   /* Modal styles for mobile */
   .cf-modal-bg {
     align-items: flex-end;
@@ -1051,8 +1001,93 @@ html, body {
     margin-top: 5px;
   }
 }
-
-
+/* Tablets (portrait: 601-900px) */
+@media (max-width: 900px) and (min-width: 601px) {
+  .cf-header {
+    font-size: 1.07em;
+    padding: 10px 2vw;
+  }
+  .cf-main {
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+  .cf-sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    border-right: none;
+    border-bottom: 2px solid var(--cf-border);
+    flex-direction: row;
+    overflow-x: auto;
+    box-shadow: none;
+    z-index: 2;
+  }
+  .cf-sidebar-title {
+    display: none;
+  }
+  .cf-sidebar-item {
+    min-width: 70px;
+    padding: 11px 12px;
+    font-size: 1em;
+    border-radius: 15px;
+  }
+  .cf-editor,
+  .cf-editor-card {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+  .cf-monaco-wrap {
+    margin: 0 2vw 0 2vw;
+    border-radius: 13px;
+    height: 55vh !important;
+    min-height: 240px;
+    max-height: 55vw;
+  }
+  .cf-editor-statusbar {
+    flex-direction: row;
+    gap: 13px;
+    font-size: 1em;
+    padding: 10px 12px 13px;
+  }
+  .cf-save-btn {
+    padding: 12px 22px;
+    width: unset;
+    font-size: 1em;
+    border-radius: 9px;
+  }
+  .cf-modal {
+    width: 96vw !important;
+    max-width: 96vw;
+    min-width: 0;
+    border-radius: 1.5em;
+    padding: 38px 4vw 23px 4vw;
+    box-shadow: 0 2px 24px #ffb86c33;
+    left: 2vw;
+    right: 2vw;
+  }
+}
+/* Hide scrollbars, optional but nice for mobile */
+.cf-sidebar,
+.cf-main {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cf-border) transparent;
+}
+.cf-sidebar::-webkit-scrollbar,
+.cf-main::-webkit-scrollbar {
+  width: 5px !important;
+  background: transparent;
+}
+.cf-sidebar::-webkit-scrollbar-thumb,
+.cf-main::-webkit-scrollbar-thumb {
+  background: var(--cf-border);
+  border-radius: 6px;
+}
+}
 
    ` } </style> 
    </div>
