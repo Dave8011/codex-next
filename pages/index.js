@@ -136,7 +136,7 @@ function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
     };
 
     if (!show) return null;
-return (
+ return (
   <div className="cf-modal-bg" role="dialog" aria-modal="true">
     <div className="cf-modal">
       <button onClick={onClose} className="cf-modal-close" aria-label="Close">
@@ -222,8 +222,7 @@ return (
       </button>
     </div>
   </div>
-);
-            }
+); }
 
             export default function Index() {
                 const [theme, setTheme] = useTheme();
