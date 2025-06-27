@@ -857,11 +857,63 @@ html, body {
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
-  .cf-monaco-wrap, .monaco-editor, .monaco-editor-background {
+  html, body, .cf-root, .cf-main {
+    height: 100vh !important;
+    min-height: 0 !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .cf-editor {
+    flex: 1 1 auto !important;
+    height: calc(100vh - 44px - 48px) !important; /* header + sidebar */
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .cf-editor-card {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    height: 100% !important;
     width: 100vw !important;
-    height: 50vh !important; /* or whatever fits */
-    min-height: 200px !important;
-    max-height: 80vh !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-bottom: 0 !important;
+    background: var(--cf-card) !important;
+    border: none !important;
+    overflow: hidden !important;
+  }
+  .cf-monaco-wrap {
+    flex: 1 1 auto !important;
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: none !important;
+    overflow: hidden !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  .monaco-editor, .monaco-editor-background, .monaco-editor .overflow-guard {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+  .cf-editor-statusbar, .cf-save-btn {
+    position: static !important;
+    margin-bottom: 0 !important;
   }
 }
    ` } </style> 
