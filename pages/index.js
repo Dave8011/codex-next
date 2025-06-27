@@ -1,245 +1,226 @@
-  // HOME PAGE
+// HOME PAGE
+import { useEffect, useState, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 
+// Monaco Editor dynamic import for SSR safety
+const MonacoEditor = dynamic(() =>
+    import ("@monaco-editor/react"), { ssr: false });
 
-  import { useEffect, useState, useRef, useCallback } from "react";
-  import dynamic from "next/dynamic";
+// Language detection based on file extension
+function detectLanguage(filename = "") {
+    const ext = filename.split(".").pop().toLowerCase();
+    const map = {
+        js: "javascript",
+        jsx: "javascript",
+        ts: "typescript",
+        tsx: "typescript",
+        json: "json",
+        css: "css",
+        scss: "scss",
+        html: "html",
+        htm: "html",
+        md: "markdown",
+        markdown: "markdown",
+        py: "python",
+        java: "java",
+        php: "php",
+        rb: "ruby",
+        c: "c",
+        h: "c",
+        cpp: "cpp",
+        cc: "cpp",
+        cxx: "cpp",
+        hpp: "cpp",
+        go: "go",
+        rs: "rust",
+        sh: "shell",
+        bash: "shell",
+        xml: "xml",
+        yml: "yaml",
+        yaml: "yaml",
+        sql: "sql",
+        swift: "swift",
+        txt: "txt"
+    };
+    return map[ext] || "plaintext";
+}
 
-  // Monaco Editor dynamic import for SSR safety
-  const MonacoEditor = dynamic(() =>
-      import ("@monaco-editor/react"), { ssr: false });
+// [EXT PATCH] -- Supported file extensions for dropdown
+const FILE_EXTENSIONS = [
+    "js", "jsx", "ts", "tsx", "json", "css", "scss", "html", "md", "py", "java",
+    "php", "rb", "c", "cpp", "go", "rs", "sh", "xml", "yml", "yaml", "sql", "swift", "txt"
+];
 
-  // Language detection based on file extension
-  function detectLanguage(filename = "") {
-      const ext = filename.split(".").pop().toLowerCase();
-      const map = {
-          js: "javascript",
-          jsx: "javascript",
-          ts: "typescript",
-          tsx: "typescript",
-          json: "json",
-          css: "css",
-          scss: "scss",
-          html: "html",
-          htm: "html",
-          md: "markdown",
-          markdown: "markdown",
-          py: "python",
-          java: "java",
-          php: "php",
-          rb: "ruby",
-          c: "c",
-          h: "c",
-          cpp: "cpp",
-          cc: "cpp",
-          cxx: "cpp",
-          hpp: "cpp",
-          go: "go",
-          rs: "rust",
-          sh: "shell",
-          bash: "shell",
-          xml: "xml",
-          yml: "yaml",
-          yaml: "yaml",
-          sql: "sql",
-          swift: "swift",
-          txt: "txt"
-      };
-      return map[ext] || "plaintext";
-  }
+// Get parent folder from a path
+function parentPath(path) {
+    if (!path) return "";
+    const parts = path.split("/").filter(Boolean);
+    parts.pop();
+    return parts.join("/");
+}
 
-  // [EXT PATCH] -- Supported file extensions for dropdown
-  const FILE_EXTENSIONS = [
-      "js", "jsx", "ts", "tsx", "json", "css", "scss", "html", "md", "py", "java",
-      "php", "rb", "c", "cpp", "go", "rs", "sh", "xml", "yml", "yaml", "sql", "swift", "txt"
-  ];
+// Theme management
+function useTheme() {
+    const [theme, setTheme] = useState(() =>
+        typeof window !== "undefined" ? localStorage.getItem("theme") || "unique" : "unique"
+    );
+    useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+    return [theme, setTheme];
+}
 
-  // Get parent folder from a path
-  function parentPath(path) {
-      if (!path) return "";
-      const parts = path.split("/").filter(Boolean);
-      parts.pop();
-      return parts.join("/");
-  }
+// Modal for creating files/folders
+function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
+    const [name, setName] = useState("");
+    const [type, setType] = useState("file");
+    const [content, setContent] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    // [EXT PATCH] extension state, default to 'js'
+    const [extension, setExtension] = useState("js");
 
-  // Theme management
-  function useTheme() {
-      const [theme, setTheme] = useState(() =>
-          typeof window !== "undefined" ? localStorage.getItem("theme") || "unique" : "unique"
-      );
-      useEffect(() => {
-          document.documentElement.dataset.theme = theme;
-          localStorage.setItem("theme", theme);
-      }, [theme]);
-      return [theme, setTheme];
-  }
+    useEffect(() => {
+        if (show) {
+            setName("");
+            setType("file");
+            setContent("");
+            setError("");
+            setExtension("js"); // [EXT PATCH] reset extension
+        }
+    }, [show]);
 
-  // Modal for creating files/folders
-  function CreateFileOrFolder({ currentPath, onCreated, show, onClose }) {
-      const [name, setName] = useState("");
-      const [type, setType] = useState("file");
-      const [content, setContent] = useState("");
-      const [loading, setLoading] = useState(false);
-      const [error, setError] = useState("");
-      // [EXT PATCH] extension state, default to 'js'
-      const [extension, setExtension] = useState("js");
+    // [EXT PATCH] handle name change and auto-select extension
+    const handleNameChange = (e) => {
+        const val = e.target.value;
+        setName(val);
+        // If user types .ext, match dropdown
+        const ext = val.split(".").length > 1 ? val.split(".").pop().toLowerCase() : "";
+        if (FILE_EXTENSIONS.includes(ext)) setExtension(ext);
+    };
 
-      useEffect(() => {
-          if (show) {
-              setName("");
-              setType("file");
-              setContent("");
-              setError("");
-              setExtension("js"); // [EXT PATCH] reset extension
-          }
-      }, [show]);
+    const handleCreate = async() => {
+        if (!name.trim()) {
+            setError("Name is required.");
+            return;
+        }
+        setLoading(true);
+        setError("");
+        try {
+            let finalName = name.trim();
+            if (type === "file") {
+                // [EXT PATCH] If user didn't type extension, add it
+                if (!finalName.endsWith(`.${extension}`)) {
+                    // If they typed a different extension, replace it
+                    if (finalName.includes(".")) {
+                        finalName = finalName.replace(/\.[^.]+$/, `.${extension}`);
+                    } else {
+                        finalName = `${finalName}.${extension}`;
+                    }
+                }
+            }
+            const res = await fetch("/api/files/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: finalName, type, subpath: currentPath, content }),
+            });
+            const data = await res.json();
+            if (res.ok) { onCreated();
+                setName("");
+                setContent("");
+                onClose();} 
+                else {setError(data.error || "Failed to create.");}
+              } catch (err) { setError("Network error.");}
+        setLoading(false);
+    };
 
-      // [EXT PATCH] handle name change and auto-select extension
-      const handleNameChange = (e) => {
-          const val = e.target.value;
-          setName(val);
-          // If user types .ext, match dropdown
-          const ext = val.split(".").length > 1 ? val.split(".").pop().toLowerCase() : "";
-          if (FILE_EXTENSIONS.includes(ext)) setExtension(ext);
-      };
+    if (!show) return null;
 
-      const handleCreate = async() => {
-          if (!name.trim()) {
-              setError("Name is required.");
-              return;
-          }
-          setLoading(true);
-          setError("");
-          try {
-              let finalName = name.trim();
-              if (type === "file") {
-                  // [EXT PATCH] If user didn't type extension, add it
-                  if (!finalName.endsWith(`.${extension}`)) {
-                      // If they typed a different extension, replace it
-                      if (finalName.includes(".")) {
-                          finalName = finalName.replace(/\.[^.]+$/, `.${extension}`);
-                      } else {
-                          finalName = `${finalName}.${extension}`;
-                      }
-                  }
-              }
-              const res = await fetch("/api/files/create", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name: finalName, type, subpath: currentPath, content }),
-              });
-              const data = await res.json();
-              if (res.ok) {
-                  onCreated();
-                  setName("");
-                  setContent("");
-                  onClose();
-              } else {
-                  setError(data.error || "Failed to create.");
-              }
-          } catch (err) {
-              setError("Network error.");
-          }
-          setLoading(false);
-      };
-
-      if (!show) return null;
-
-      return ( <
-              div className = "cf-modal-bg"
-              role = "dialog"
-              aria - modal = "true" >
-              <
-              div className = "cf-modal" >
-              <
-              button onClick = { onClose }
-              className = "cf-modal-close"
-              aria - label = "Close" >
-              &
-              times; <
-              /button> <
-              h2 className = "cf-modal-title" >
-              <
-              span className = "cf-modal-icon" > { type === "file" ? "📄" : "📂" } < /span>
-              Create { type === "file" ? "File" : "Folder" } <
-              /h2> <
-              select value = { type }
-              onChange = { e => setType(e.target.value) }
-              className = "cf-modal-select" >
-              <
-              option value = "file" > File < /option> <
-              option value = "folder" > Folder < /option> <
-              /select> { /* [EXT PATCH] Name+extension input row for files */ } {
-                  type === "file" ? ( <
-                      >
-                      <
-                      div style = {
-                          { display: "flex", gap: 8, marginBottom: 8 } } >
-                      <
-                      input type = "text"
-                      placeholder = "Name (without extension)"
-                      value = { name }
-                      onChange = { handleNameChange }
-                      className = "cf-modal-input"
-                      disabled = { loading }
-                      aria - label = "File name"
-                      style = {
-                          { flex: 1 } }
-                      /> <
-                      select value = { extension }
-                      onChange = { e => setExtension(e.target.value) }
-                      className = "cf-modal-select"
-                      disabled = { loading }
-                      style = {
-                          { width: 110 } } >
-                      {
-                          FILE_EXTENSIONS.map(ext => ( <
-                              option key = { ext }
-                              value = { ext } > . { ext } < /option>
-                          ))
-                      } <
-                    /select> <
-                    /div> { /* [EXT PATCH] Show detected type */ } {
-                        (name || extension) && ( <
-                            div style = {
-                                { color: "var(--cf-muted)", marginBottom: 8, fontSize: "0.98em" } } >
-                            Detected type: < b > { detectLanguage(`${name || "file"}.${extension}`) } < /b> <
-                            /div>
-                        )
-                    } <
-                    />
-                ) : ( <
+    return ( <div className = "cf-modal-bg"
+            role = "dialog"
+            aria-modal = "true" >
+            <div className = "cf-modal" >
+            <button onClick = { onClose }
+            className = "cf-modal-close"
+            aria-label = "Close" >
+            &
+            times; 
+            </button> 
+            <h2 className = "cf-modal-title" >
+            <span className = "cf-modal-icon" > { type === "file" ? "📄" : "📂" } </span>
+            Create { type === "file" ? "File" : "Folder" } 
+            </h2> 
+            <select value = { type }
+            onChange = { e => setType(e.target.value) }
+            className = "cf-modal-select" >
+            <option value = "file" > File </option> 
+            <option value = "folder" > Folder </option> 
+            </select> { /* [EXT PATCH] Name+extension input row for files */ } 
+            { type === "file" ? ( <
+                    >
+                    <
+                    div style = {
+                        { display: "flex", gap: 8, marginBottom: 8 } } >
+                    <
                     input type = "text"
+                    placeholder = "Name (without extension)"
+                    value = { name }
+                    onChange = { handleNameChange }
+                    className = "cf-modal-input"
+                    disabled = { loading }
+                    aria-label = "File name"
+                    style = {
+                        { flex: 1 } }/> <
+                    select value = { extension }
+                    onChange = { e => setExtension(e.target.value) }
+                    className = "cf-modal-select"
+                    disabled = { loading }
+                    style = {
+                        { width: 110 } } >
+                    {
+                        FILE_EXTENSIONS.map(ext => ( <option key = { ext } value = { ext } > . { ext } </option>
+                        ))
+                    } </select> 
+                    </div> 
+                       { /* [EXT PATCH] Show detected type */ } {
+                        (name || extension) && ( <div style = {
+                                { color: "var(--cf-muted)", marginBottom: 8, fontSize: "0.98em" } } >
+                            Detected type: <b> { detectLanguage(`${name || "file"}.${extension}`) } </b> 
+                            </div>
+                        )
+                    } < 
+                    />
+                ) : ( <input type = "text"
                     placeholder = { `Name (e.g. newfolder)` }
                     value = { name }
                     onChange = { e => setName(e.target.value) }
                     className = "cf-modal-input"
                     disabled = { loading }
-                    aria - label = "Folder name"
+                    aria-label = "Folder name"
                     style = {
-                        { marginBottom: 16 } }
-                    />
+                        { marginBottom: 16 } }/>
                 )
             } {
-                type === "file" && ( <
-                    textarea placeholder = "Optional file content..."
+                type === "file" && ( <textarea placeholder = "Optional file content..."
                     value = { content }
                     onChange = { e => setContent(e.target.value) }
                     className = "cf-modal-textarea"
                     disabled = { loading }
                     style = {
                         { minHeight: 48 } }
-                    aria - label = "File content" /
-                    >
+                    aria-label = "File content" />
                 )
             } {
-                error && < div className = "cf-modal-error" > { error } < /div>} <
-                    button onClick = { handleCreate }
+                error && < div className = "cf-modal-error" > { error } 
+                </div>} 
+                <button onClick = { handleCreate }
                 disabled = { loading }
                 className = "cf-modal-create" > {
-                    loading ? < span className = "cf-spinner" > < /span> : "➕ Create"} <
-                    /button> <
-                    /div> <
-                    /div>
+                    loading ? < span className = "cf-spinner" > </span> : "➕ Create"} 
+                    </button> 
+                    </div> 
+                    </div>
                 );
             }
 
@@ -318,99 +299,81 @@
                 // SIDEBAR: vertical file/folder navigation with large icons, animated transitions
                 // EDITOR: rounded glass panel, floating action bar, accent gradient, Monaco Editor
 
-                return ( <
-                        div className = "cf-root" > { /* Header */ } <
-                        header className = "cf-header" >
-                        <
-                        span className = "cf-logo" > ⮜⮞Codex Panel < /span> <
-                        div className = "cf-header-actions" >
-                        <
-                        button className = "cf-btn cf-theme-btn"
+                return ( <div className = "cf-root" > { /* Header */ } 
+                        <header className = "cf-header" >
+                        <span className = "cf-logo" > ⮜⮞Codex Panel </span> 
+                        <div className = "cf-header-actions" >
+                        <button className = "cf-btn cf-theme-btn"
                         onClick = {
                             () => setTheme(theme === "unique" ? "light" : theme === "light" ? "dark" : "unique") }
-                        aria - label = "Theme" >
-                        { theme === "unique" ? "🌈" : theme === "light" ? "☀️" : "🌙" } <
-                        /button> <
-                        button className = "cf-btn cf-new-btn"
+                        aria-label = "Theme" >
+                        { theme === "unique" ? "🌈" : theme === "light" ? "☀️" : "🌙" } 
+                        </button> 
+                        <button className = "cf-btn cf-new-btn"
                         onClick = {
-                            () => setShowCreate(true) } > ➕New <
-                        /button> <
-                        /div> <
-                        /header>
+                            () => setShowCreate(true) } > ➕New 
+                            </button> 
+                        </div> 
+                        </header>
 
-                        <
-                        main className = "cf-main" > { /* Sidebar */ } <
-                        nav className = "cf-sidebar"
-                        aria - label = "File navigation" >
-                        <
-                        div className = "cf-sidebar-title" > Browse < /div> {
-                            currentPath && ( <
-                                button className = "cf-sidebar-item cf-up"
+                        <main className = "cf-main" > { /* Sidebar */ } 
+                        < nav className = "cf-sidebar"
+                        aria-label = "File navigation" >
+                        <div className = "cf-sidebar-title" > Browse </div> {
+                            currentPath && ( 
+                              <button className = "cf-sidebar-item cf-up"
                                 onClick = {
                                     () => fetchFiles(parentPath(currentPath)) }
-                                aria - label = "Up one folder" >
-                                <
-                                span className = "cf-sidebar-icon" > ⬆️ < /span> <
-                                span className = "cf-sidebar-label" > .. < /span> <
-                                /button>
+                                aria-label = "Up one folder">
+                                <span className = "cf-sidebar-icon" > ⬆️ </span> 
+                                <span className = "cf-sidebar-label" > .. </span> 
+                                </button>
                             )
                         } {
-                            sidebarError ? ( <
-                                div className = "cf-sidebar-empty" > { sidebarError } < /div>
+                            sidebarError ? ( 
+                              <div className = "cf-sidebar-empty" > { sidebarError } </div>
                             ) : files.length > 0 ? (
-                                files
+                              files
                                 .filter(file => file.name !== '.gitkeep') // <-- Correct placement
-                                .map(file => ( <
-                                    button key = { `${currentPath}/${file.name}` }
+                                .map(file => ( <button key = { `${currentPath}/${file.name}` }
                                     className = { `cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}` }
                                     onClick = {
-                                        () =>
-                                        file.type === "folder" ?
+                                        () =>file.type === "folder" ?
                                         fetchFiles([currentPath, file.name].filter(Boolean).join("/")) :
-                                            openFile(file.name)
-                                    }
-                                    aria - label = { file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}` } >
-                                    <
-                                    span className = "cf-sidebar-icon" > { file.type === "folder" ? "📂" : "📄" } <
-                                    /span> <
-                                    span className = "cf-sidebar-label" > { file.name } < /span> <
-                                    /button>
+                                            openFile(file.name)}
+                                    aria-label = { file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}` } >
+                                    <span className = "cf-sidebar-icon" > { file.type === "folder" ? "📂" : "📄" }
+                                    </span> 
+                                    <span className = "cf-sidebar-label" > { file.name } </span> 
+                                    </button>
                                 ))
-                            ) : ( <
-                                div className = "cf-sidebar-empty" > No files < /div>
+                            ) : ( <div className = "cf-sidebar-empty" > No files </div>
                             )
-                        } <
-                        /nav>
+                        } </nav>
 
-                        { /* Editor */ } <
-                        section className = "cf-editor" > {
-                            fileContent ? ( <
-                                div className = "cf-editor-card" >
-                                <
-                                div className = "cf-editor-topbar" >
-                                <
-                                span className = "cf-filename" > { fileContent.name } <
-                                span className = "cf-lang-badge" > { detectLanguage(fileContent.name) } < /span> <
-                                /span> <
-                                div className = "cf-actionbar" >
-                                <
-                                button className = "cf-action-btn"
+                        { /* Editor */ } 
+                        <section className = "cf-editor" > 
+                        {fileContent ? ( <div className = "cf-editor-card" >
+                                <div className = "cf-editor-topbar" >
+                                <span className = "cf-filename" > { fileContent.name } 
+                                <span className = "cf-lang-badge" > { detectLanguage(fileContent.name) } </span> 
+                                </span> <div className = "cf-actionbar" >
+                                <button className = "cf-action-btn"
                                 onClick = { handleFormat }
-                                title = "Format" > 🧹Format <
-                                /button> <
+                                title = "Format" > 🧹Format 
+                                </button> <
                                 button className = "cf-action-btn"
                                 onClick = { handleCopy }
-                                title = "Copy code" > { copyStatus ? "✅ Copied" : "📋 Copy" } <
-                                /button> <
-                                button className = "cf-action-btn"
+                                title = "Copy code" > { copyStatus ? "✅ Copied" : "📋 Copy" } 
+                                </button> 
+                                <button className = "cf-action-btn"
                                 onClick = {
-                                    () => fetchFiles(currentPath) } > ←Files <
-                                /button> <
-                                /div> <
-                                /div> <
-                                div className = "cf-monaco-wrap" >
-                                <
-                                MonacoEditor height = "75vh"
+                                    () => fetchFiles(currentPath) } > ←Files 
+                                    </button> 
+                                </div> 
+                                </div> 
+                                <div className = "cf-monaco-wrap" >
+                                <MonacoEditor height = "75vh"
                                 defaultLanguage = { detectLanguage(fileContent.name) }
                                 language = { detectLanguage(fileContent.name) }
                                 value = { fileContent.content }
@@ -435,17 +398,14 @@
                                         wordWrap: "on",
                                     }
                                 }
-                                /> <
-                                /div>
-
-                                <
-                                div className = "cf-editor-statusbar" >
-                                <
-                                span className = "cf-status-label" > { saveStatus === "saving" && "💾 Saving..." } {
-                                    saveStatus === "saved" && < span className = "cf-status-saved" > ✅Saved! < /span>} {
-                                        saveStatus === "error" && < span className = "cf-status-error" > ❌Save failed < /span>} <
-                                            /span> <
-                                            button
+                                /> 
+                                </div>
+                                <div className = "cf-editor-statusbar" >
+                                <span className = "cf-status-label" > { saveStatus === "saving" && "💾 Saving..." } {
+                                    saveStatus === "saved" && < span className = "cf-status-saved" > ✅Saved! </span>} {
+                                        saveStatus === "error" && < span className = "cf-status-error" > ❌Save failed </span>} 
+                                        </span> 
+                                            <button
                                         className = "cf-save-btn"
                                         disabled = { saving }
                                         onClick = {
@@ -464,33 +424,28 @@
                                                         });
                                                         if (res.ok) {
                                                             setSaveStatus("saved");
-                                                            setTimeout(() => setSaveStatus(""), 1800);
-                                                        } else {
-                                                            const data = await res.json().catch(() => ({}));
+                                                            setTimeout(() => setSaveStatus(""), 1800);} 
+                                                            else {const data = await res.json().catch(() => ({}));
                                                             setSaveStatus("error");
                                                             // Optionally show data.error here
                                                         }
-                                                    } catch {
-                                                        setSaveStatus("error");
-                                                    }
+                                                    } 
+                                                    catch {setSaveStatus("error"); }
                                                     setSaving(false);
                                                 }
                                             } >
-                                            { saving ? "💾 Saving..." : "💾 Save" } <
-                                            /button> <
-                                            /div> <
-                                            /div>
-                                    ): ( <
-                                        div className = "cf-editor-empty" >
-                                        <
-                                        span className = "cf-editor-empty-icon" > 🗂️ < /span> <
-                                        div > Choose a file to view or edit < /div> <
-                                        /div>
+                                            {saving ? "💾 Saving..." : "💾 Save"} 
+                                            </button> 
+                                            </div> 
+                                            </div>
+                                    ): ( 
+                                      <div className = "cf-editor-empty" >
+                                        <span className = "cf-editor-empty-icon" > 🗂️ </span> 
+                                        <div> Choose a file to view or edit </div> 
+                                        </div>
                                     )
-                                } <
-                                /section> <
-                                /main>
-
+                                } </section> 
+                                </main>
                                 <
                                 CreateFileOrFolder currentPath = { currentPath }
                                 show = { showCreate }
@@ -501,8 +456,9 @@
                                 />
 
 
-                                { /* ...styles are the same as your current version... */ } <
-                                style jsx global > { `
+                                { /* ...styles are the same as your current version... */ } 
+                                <style jsx global > 
+{ `
  /* ===== THEME COLORS (Unique, Warm, Soft, NOT VS Code) ===== */
 
 :root,
@@ -1050,7 +1006,7 @@ html, body {
     border-radius: 8px !important;
   }
 }
-   ` } < /style> <
-                                /div>
-                            );
-                        }
+   ` } </style> 
+   </div>
+     ); 
+}
