@@ -1,4 +1,4 @@
-
+// FLIPKART FATCH INVENTORY AND FNSKU VIA SKU
 
 function fetchFSNAndInventory() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("fk");
