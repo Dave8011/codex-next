@@ -1,0 +1,85 @@
+Feature Breakdown: "Single Product Update on All Marketplaces"
+✅ What You Suggested:
+Add a button labeled: Single Product Update on All MP.
+
+On click, a search bar appears.
+
+Type a SKU → system fetches that SKU’s current stock values across all connected marketplaces.
+
+Allow user to enter new QTY once, and push to all marketplaces with one click.
+
+💡 Suggested Flow (UX Design Idea):
+Step 1: User clicks the button
+Button label: Update Single SKU
+
+Opens a modal or collapsible card with:
+
+A SKU search input
+
+A search button
+
+Step 2: System looks up the SKU
+Pull existing data from your internal SKU catalog (already in your backend).
+
+Show a result table like:
+
+Marketplace	Current Qty	New Qty (editable)
+Amazon	14	[ 14 ]
+Flipkart	12	[ 14 ]
+Jiomart	0	[ 14 ]
+
+The New Qty fields can default to whatever the user inputs globally (or stay editable per MP).
+
+Step 3: User clicks Push to All
+You send the new qty via your existing updateInventory() API function for each marketplace.
+
+Show status per MP:
+
+✅ Amazon updated
+
+❌ Flipkart failed: invalid token
+
+✅ Jiomart updated
+
+📦 Backend Considerations
+Since your system already:
+
+Stores all SKUs
+
+Has API integration with Amazon, Flipkart, etc.
+You just need to:
+
+Write a function like getSKUDetails(sku) to fetch marketplace data.
+
+Reuse your existing updateInventory(sku, qty) logic.
+
+Wrap this in a POST endpoint like /update-single-sku.
+
+🧠 Smart Add-ons (Optional but Cool)
+Global input field: Enter one QTY value → autofill all MP new qty fields.
+
+Marketplace checkboxes: Select where to push (e.g. only Flipkart + Jiomart).
+
+Keyboard shortcuts: Make it super fast for power users.
+
+🧪 Prototype UI Example (basic idea)
+html
+Copy code
+[SINGLE SKU UPDATE]  
+  [ Search SKU: ________ (🔍) ]
+
+Results:
+  SKU: ABC123
+
+| Marketplace | Current Qty | New Qty  |
+|-------------|-------------|----------|
+| Amazon      | 10          | [  15 ]  |
+| Flipkart    | 8           | [  15 ]  |
+| Jiomart     | 0           | [  15 ]  |
+
+[ Push to All ]     [ Cancel ]
+🧭 Summary: Why This is a Great Addition
+✅ Saves time for minor fixes
+✅ No CSV needed
+✅ Reduces chances of full-batch errors
+✅ Great for urgent stock sync across platforms
