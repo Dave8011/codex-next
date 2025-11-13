@@ -408,6 +408,23 @@ function checkImageURL(url, timeout = 20000) {
   a.click();
   document.body.removeChild(a);
 });
+    /* ===========================
+      🔝 Back to Top Button
+         =========================== */
+        const backToTopBtn = document.getElementById("backToTop");
+    // Show/hide when scrolling
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add("show");
+      } else {
+        backToTopBtn.classList.remove("show");
+      }
+    });
+
+    // Scroll smoothly to top
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
     /* ===========================
        Search & Filters
