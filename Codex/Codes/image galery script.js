@@ -52,14 +52,15 @@ fetch(`../products.json?t=${Date.now()}`)
     /* ===========================
        Render Product Gallery
        =========================== */
-    function renderProducts(filter = '', category = '', listingType = '') {
+    function renderProducts(filter = '', category = '', listingType = '', packagingType = '') {
       gallery.innerHTML = '';
 
       const filtered = data.filter(p =>
         (p.title.toLowerCase().includes(filter.toLowerCase()) ||
          p.sku.toLowerCase().includes(filter.toLowerCase())) &&
         (category === '' || p.category === category) &&
-        (listingType === '' || p.listingType === listingType)
+        (listingType === '' || p.listingType === listingType) &&
+        (packagingType === '' || p.packagingType === packagingType)
       );
 
       if (filtered.length === 0) {
