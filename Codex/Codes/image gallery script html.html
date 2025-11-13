@@ -17,7 +17,7 @@
 
   <div id="controls">
     <!-- 🔍 Search Input (Visible on all screens) -->
-    <input type="text" id="searchBar" placeholder="🔍 Search by SKU or Name..." aria-label="Search products by SKU or Name" />
+    <input type="text" id="searchBar" placeholder="🔍 Search by SKU or Name..." aria-label="Search products by SKU or Name" /> <br>
     
     <!-- ☰ Hamburger Menu for Mobile -->
     <div id="menuToggle" aria-label="Toggle Filters/Actions" tabindex="0">☰</div>
@@ -32,8 +32,12 @@
         <option value="">🏷️ All Listing Types</option>
       </select>
 
+      <select id="listingTypeFilter" aria-label="Filter by listing type">
+        <option value="">📦 Packaging Type</option>
+      </select>
+
       <button id="downloadMissingBtn">⬇️ Missing IMG</button>
-      <button id="downloadZipBtn">📦 IMG_zip</button>
+      <button id="downloadZipBtn">📬 IMG_zip</button>
     </div>
   </div>
 
