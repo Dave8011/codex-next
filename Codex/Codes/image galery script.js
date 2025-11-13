@@ -16,6 +16,7 @@ fetch(`../products.json?t=${Date.now()}`)
     const searchBar = document.getElementById('searchBar');
     const categoryFilter = document.getElementById('categoryFilter');
     const listingTypeFilter = document.getElementById('listingTypeFilter');
+    const packagingTypeFilter = document.getElementById('packagingTypeFilter');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxClose = document.getElementById('lightbox-close');
@@ -38,6 +39,14 @@ fetch(`../products.json?t=${Date.now()}`)
       opt.value = type;
       opt.textContent = type;
       listingTypeFilter.appendChild(opt);
+    });
+
+    const packagingTypes = [...new Set(data.map(p => p.packagingType).filter(Boolean))];
+    packagingTypes.forEach(type => {
+      const opt = document.createElement('option');
+      opt.value = type;
+      opt.textContent = type;
+      packagingTypeFilter.appendChild(opt);
     });
 
     /* ===========================
@@ -402,9 +411,9 @@ function checkImageURL(url, timeout = 20000) {
     /* ===========================
        Search & Filters
        =========================== */
-    searchBar.addEventListener('input', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value));
-    categoryFilter.addEventListener('change', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value));
-    listingTypeFilter.addEventListener('change', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value));
+    searchBar.addEventListener('input', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value, packagingTypeFilter.value));
+    categoryFilter.addEventListener('change', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value, packagingTypeFilter.value));
+    listingTypeFilter.addEventListener('change', () => renderProducts(searchBar.value, categoryFilter.value, listingTypeFilter.value, packagingTypeFilter.value));
 
     /* ===========================
        Mobile Menu Toggle
