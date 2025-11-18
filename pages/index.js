@@ -23,6 +23,7 @@ export default function Index() {
   const [showCreate, setShowCreate] = useState(false); // Toggle for create modal
   const [copyStatus, setCopyStatus] = useState(""); // Feedback for copy button
   const [sidebarError, setSidebarError] = useState("");
+  const [editorError, setEditorError] = useState(null); // <-- ADD THIS
 
   // --- NEW: State for mobile sidebar toggle ---
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
