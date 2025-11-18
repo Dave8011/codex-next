@@ -201,6 +201,11 @@ body {
   display: none; /* Hidden on desktop */
   background: var(--cf-card);
   color: var(--cf-btn2);
+  /* Make it a square icon button */
+  font-size: 1.5em; /* Make icon bigger */
+  font-weight: bold;
+  padding: 4px 12px; /* Adjust padding for icon */
+  line-height: 1; /* Center icon vertically */
 }
 .cf-sidebar-toggle:hover {
   color: var(--cf-btn-hover);
