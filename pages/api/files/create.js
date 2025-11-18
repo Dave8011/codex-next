@@ -1,51 +1,45 @@
-// pages/api/files/create.js
-import { Octokit } from "@octokit/rest";
+import fs from "fs/promises";
+import path from "path";
 
-const octokit = new Octokit({ auth: process.env.MY_CODEX_TOKEN });
-
-const owner = "Dave8011";
-const repo = "codex-next";
-const basePath = "Codex/Codes";
+// Define the absolute path to the intended directory
+const baseDir = path.join(process.cwd(), "Codex");
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).json({ error: "Method not allowed." });
   }
 
-  const { name, type, subpath = "", content = "" } = req.body;
+  const { name, type, subpath, content } = req.body;
 
-  if (!name || !type) {
-    return res.status(400).json({ error: "Missing name or type" });
+  if (!name) {
+    return res.status(400).json({ error: "Name is required." });
   }
-
-  const targetPath = `${basePath}/${subpath ? `${subpath}/` : ""}${name}`;
 
   try {
-    if (type === "folder") {
-      // Create an empty folder by committing a `.gitkeep` file inside it
-      await octokit.repos.createOrUpdateFileContents({
-        owner,
-        repo,
-        path: `${targetPath}/.gitkeep`,
-        message: `📁 Create folder: ${targetPath}`,
-        content: "", // empty .gitkeep
-      });
-    } else if (type === "file") {
-      // Create a new file with optional initial content
-      await octokit.repos.createOrUpdateFileContents({
-        owner,
-        repo,
-        path: targetPath,
-        message: `📄 Create file: ${targetPath}`,
-        content: Buffer.from(content).toString("base64"),
-      });
-    } else {
-      return res.status(400).json({ error: "Invalid type. Use 'file' or 'folder'." });
+    // Create resolved paths
+    const targetDir = path.resolve(path.join(baseDir, subpath || ""));
+    const targetPath = path.resolve(path.join(targetDir, name));
+
+    // SECURITY CHECKS: Ensure BOTH paths are safely inside the base directory
+    if (!targetDir.startsWith(baseDir) || !targetPath.startsWith(baseDir)) {
+      return res.status(400).json({ error: "Invalid path." });
     }
 
-    res.status(200).json({ success: true, path: targetPath });
-  } catch (err) {
-    console.error("Create API Error:", err.response?.data || err.message);
-    res.status(500).json({ error: "Failed to create", details: err.message });
+    // Check for path collision
+    try {
+      await fs.access(targetPath);
+      return res.status(400).json({ error: "File or folder already exists." });
+    } catch (e) {
+      // Doesn't exist, good to proceed
+    }
+
+    if (type === "folder") {
+      await fs.mkdir(targetPath);
+    } else {
+      await fs.writeFile(targetPath, content || "");
+    }
+    res.status(201).json({ message: `${type} created.` });
+  } catch (e) {
+    res.status(500).json({ error: `Failed to create ${type}.` });
   }
 }
