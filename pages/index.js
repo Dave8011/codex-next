@@ -72,10 +72,10 @@ export default function Index() {
         setFileContent({ name: filename, content: data.content });
         setSaveStatus(""); // Clear save status on new file
         setCopyStatus("");
+        setEditorError(null);
         setShowMobileSidebar(false); // --- NEW: Close sidebar on file open ---
       } catch (e) {
         setFileContent(null);
-        setSaveStatus("error"); // Show open error
       }
     },
     [currentPath] // Re-create if currentPath changes
@@ -403,9 +403,19 @@ export default function Index() {
             </div>
           ) : (
             <div className="cf-editor-empty">
+          {/* NEW: Show error if one exists */}
+          {editorError ? (
+            <>
+              <span className="cf-editor-empty-icon" style={{filter: 'grayscale(100%)'}}> ❌ </span>
+              <div className="cf-status-error" style={{fontSize: '1.1em', marginTop: '15px'}}> {editorError} </div>
+            </>
+          ) : (
+            <>
               <span className="cf-editor-empty-icon"> 🗂️ </span>
               <div> Choose a file to view or edit </div>
-            </div>
+            </>
+          )}
+        </div>
           )}
         </section>
       </main>
