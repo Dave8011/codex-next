@@ -305,13 +305,6 @@ export default function Index() {
         onClose={() => setShowCreate(false)}
         onCreated={() => fetchFiles(currentPath)}
       />
-
-      {/* NOTE: We are intentionally leaving the <style jsx global> block EMPTY.
-        We will move its contents in the next step.
-      */}
-      <style jsx global>{`
-        /* ===== STYLES WILL BE MOVED ===== */
-      `}</style>
     </div>
   );
 }
