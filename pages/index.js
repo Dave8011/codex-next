@@ -1,6 +1,8 @@
 // HOME PAGE
 import { useEffect, useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
+
+// Import our refactored modules
 import { useTheme } from "../hooks/useTheme";
 import { detectLanguage, parentPath } from "../utils/fileUtils";
 import CreateFileOrFolder from "../components/CreateFileOrFolder";
@@ -11,19 +13,31 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 });
 
 export default function Index() {
+  // --- State Hooks ---
   const [theme, setTheme] = useTheme();
   const [files, setFiles] = useState([]);
   const [currentPath, setCurrentPath] = useState("");
   const [fileContent, setFileContent] = useState(null); // { name, content }
   const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("");
-  const [showCreate, setShowCreate] = useState(false);
-  const [copyStatus, setCopyStatus] = useState("");
+  const [saveStatus, setSaveStatus] = useState(""); // e.g., 'saving', 'saved', 'error'
+  const [showCreate, setShowCreate] = useState(false); // Toggle for create modal
+  const [copyStatus, setCopyStatus] = useState(""); // Feedback for copy button
   const [sidebarError, setSidebarError] = useState("");
+
+  // --- NEW: State for mobile sidebar toggle ---
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  // --- Ref Hooks ---
   const monacoRef = useRef(null);
   const editorRef = useRef(null);
+  // --- NEW: Ref to store the auto-save timer ID ---
+  const autoSaveTimerRef = useRef(null);
 
-  // Fetch files and folders
+  // --- Core Functions ---
+
+  /**
+   * Fetches files and folders for the sidebar based on the subpath.
+   */
   const fetchFiles = useCallback(async (subpath = "") => {
     try {
       setSidebarError("");
@@ -34,14 +48,17 @@ export default function Index() {
       const data = await res.json();
       setFiles(data.files || []);
       setCurrentPath(subpath);
-      setFileContent(null);
+      setFileContent(null); // Clear editor when changing folders
+      setShowMobileSidebar(false); // --- NEW: Close sidebar on nav ---
     } catch (e) {
       setFiles([]);
       setSidebarError("Unable to load files.");
     }
-  }, []);
+  }, []); // Empty dependency array, this function is stable
 
-  // Open file for editing
+  /**
+   * Opens a file and loads its content into the editor.
+   */
   const openFile = useCallback(
     async (filename) => {
       const fullPath = [currentPath, filename].filter(Boolean).join("/");
@@ -52,31 +69,91 @@ export default function Index() {
         if (!res.ok) throw new Error("Failed to open file.");
         const data = await res.json();
         setFileContent({ name: filename, content: data.content });
-        setSaveStatus("");
+        setSaveStatus(""); // Clear save status on new file
         setCopyStatus("");
+        setShowMobileSidebar(false); // --- NEW: Close sidebar on file open ---
       } catch (e) {
         setFileContent(null);
-        // This is the error handling quirk I mentioned.
-        // For now, we'll leave it, but we can fix it later.
-        setSaveStatus("error");
+        setSaveStatus("error"); // Show open error
       }
     },
-    [currentPath]
+    [currentPath] // Re-create if currentPath changes
   );
 
+  // --- Effect Hooks ---
+
+  // Initial file fetch on component mount
   useEffect(() => {
     fetchFiles();
-    // eslint-disable-next-line
-  }, [fetchFiles]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchFiles]); // fetchFiles is stable, so this runs once
 
-  // Format code in Monaco
+  // --- NEW: Auto-save effect ---
+  // This effect runs every time the file content changes
+  useEffect(() => {
+    // 1. Don't save if there's no file open or content is null
+    if (!fileContent || fileContent.content === null) {
+      return;
+    }
+
+    // 2. Clear any existing timer. This "debounces" the save.
+    //    We only save *after* the user stops typing.
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    // 3. Set a new timer to save after 2 seconds (2000ms)
+    autoSaveTimerRef.current = setTimeout(async () => {
+      setSaveStatus("saving"); // Show "Saving..."
+      setSaving(true); // Disable save button
+      const fullPath = [currentPath, fileContent.name]
+        .filter(Boolean)
+        .join("/");
+      try {
+        const res = await fetch("/api/files/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            path: fullPath,
+            content: fileContent.content,
+          }),
+        });
+        if (res.ok) {
+          setSaveStatus("saved"); // Show "Saved!"
+          setTimeout(() => setSaveStatus(""), 1800); // Clear status after 1.8s
+        } else {
+          setSaveStatus("error"); // Show "Save failed"
+        }
+      } catch {
+        setSaveStatus("error");
+      }
+      setSaving(false); // Re-enable save button
+    }, 2000); // 2-second delay
+
+    // 4. Cleanup: If the component unmounts, clear the timer
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+
+    // This effect depends on the file's content and its path
+  }, [fileContent, currentPath]);
+
+  // --- Editor Action Functions ---
+
+  /**
+   * Formats the code in the Monaco editor.
+   */
   function handleFormat() {
     if (editorRef.current) {
       editorRef.current.getAction("editor.action.formatDocument").run();
     }
   }
 
-  // Copy file code to clipboard
+  /**
+   * Copies the current file's content to the clipboard.
+   */
   const handleCopy = async () => {
     if (fileContent?.content && navigator.clipboard) {
       try {
@@ -90,15 +167,62 @@ export default function Index() {
     }
   };
 
-  // THEME COLORS: unique, warm, soft, not like VS Code
-  // SIDEBAR: vertical file/folder navigation with large icons, animated transitions
-  // EDITOR: rounded glass panel, floating action bar, accent gradient, Monaco Editor
+  /**
+   * --- NEW: Manual Save Function ---
+   * This is triggered by the "Save" button.
+   * It cancels any pending auto-save and saves immediately.
+   */
+  const handleSave = async () => {
+    if (!fileContent) return;
+
+    // Clear any pending auto-save timer
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    setSaving(true);
+    setSaveStatus("saving");
+    const fullPath = [currentPath, fileContent.name]
+      .filter(Boolean)
+      .join("/");
+    try {
+      const res = await fetch("/api/files/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: fullPath,
+          content: fileContent.content,
+        }),
+      });
+      if (res.ok) {
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus(""), 1800);
+      } else {
+        setSaveStatus("error");
+      }
+    } catch {
+      setSaveStatus("error");
+    }
+    setSaving(false);
+  };
+
+  // --- Render JSX ---
   return (
     <div className="cf-root">
       {/* Header */}
       <header className="cf-header">
         <span className="cf-logo"> ⮜⮞Codex Panel </span>
         <div className="cf-header-actions">
+          {/* --- NEW: Mobile Hamburger Menu Button --- */}
+          <button
+            className="cf-btn cf-sidebar-toggle"
+            onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+            aria-label="Toggle file navigation"
+          >
+            {showMobileSidebar ? "✕" : "☰"}
+          </button>
+          {/* --- End Hamburger --- */}
+
           <button
             className="cf-btn cf-theme-btn"
             onClick={() =>
@@ -114,7 +238,10 @@ export default function Index() {
           >
             {theme === "unique" ? "🌈" : theme === "light" ? "☀️" : "🌙"}
           </button>
-          <button className="cf-btn cf-new-btn" onClick={() => setShowCreate(true)}>
+          <button
+            className="cf-btn cf-new-btn"
+            onClick={() => setShowCreate(true)}
+          >
             {" "}
             ➕New
           </button>
@@ -123,7 +250,13 @@ export default function Index() {
 
       <main className="cf-main">
         {/* Sidebar */}
-        <nav className="cf-sidebar" aria-label="File navigation">
+        {/* --- NEW: Added dynamic class for mobile show/hide --- */}
+        <nav
+          className={`cf-sidebar ${
+            showMobileSidebar ? "cf-sidebar-open" : ""
+          }`}
+          aria-label="File navigation"
+        >
           <div className="cf-sidebar-title"> Browse </div>
           {currentPath && (
             <button
@@ -139,7 +272,7 @@ export default function Index() {
             <div className="cf-sidebar-empty"> {sidebarError} </div>
           ) : files.length > 0 ? (
             files
-              .filter((file) => file.name !== ".gitkeep") // <-- Correct placement
+              .filter((file) => file.name !== ".gitkeep")
               .map((file) => (
                 <button
                   key={`${currentPath}/${file.name}`}
@@ -212,7 +345,8 @@ export default function Index() {
               </div>
               <div className="cf-monaco-wrap">
                 <MonacoEditor
-                  height="75vh"
+                  // --- NEW: Height changed to 100% to fill container ---
+                  height="100%"
                   defaultLanguage={detectLanguage(fileContent.name)}
                   language={detectLanguage(fileContent.name)}
                   value={fileContent.content}
@@ -223,6 +357,7 @@ export default function Index() {
                       ? "vs-light"
                       : "vs-dark"
                   }
+                  // This onChange is what triggers the auto-save effect
                   onChange={(val) =>
                     setFileContent({ ...fileContent, content: val })
                   }
@@ -237,6 +372,7 @@ export default function Index() {
                     formatOnPaste: true,
                     formatOnType: true,
                     scrollBeyondLastLine: false,
+    
                     smoothScrolling: true,
                     automaticLayout: true,
                     wordWrap: "on",
@@ -257,34 +393,8 @@ export default function Index() {
                 <button
                   className="cf-save-btn"
                   disabled={saving}
-                  onClick={async () => {
-                    setSaving(true);
-                    setSaveStatus("saving");
-                    const fullPath = [currentPath, fileContent.name]
-                      .filter(Boolean)
-                      .join("/");
-                    try {
-                      const res = await fetch("/api/files/save", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          path: fullPath,
-                          content: fileContent.content,
-                        }),
-                      });
-                      if (res.ok) {
-                        setSaveStatus("saved");
-                        setTimeout(() => setSaveStatus(""), 1800);
-                      } else {
-                        const data = await res.json().catch(() => ({}));
-                        setSaveStatus("error");
-                        // Optionally show data.error here
-                      }
-                    } catch {
-                      setSaveStatus("error");
-                    }
-                    setSaving(false);
-                  }}
+                  // --- NEW: onClick now uses the handleSave function ---
+                  onClick={handleSave}
                 >
                   {saving ? "💾 Saving..." : "💾 Save"}
                 </button>
@@ -299,12 +409,16 @@ export default function Index() {
         </section>
       </main>
 
+      {/* Create File/Folder Modal */}
       <CreateFileOrFolder
         currentPath={currentPath}
         show={showCreate}
         onClose={() => setShowCreate(false)}
+        // Re-fetch files after creating a new one
         onCreated={() => fetchFiles(currentPath)}
       />
+
+      {/* The <style jsx global> block was removed and moved to styles/globals.css */}
     </div>
   );
 }
