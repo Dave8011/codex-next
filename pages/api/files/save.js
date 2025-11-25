@@ -1,32 +1,49 @@
-import fs from "fs/promises";
-import path from "path";
+// pages/api/files/save.js
+import { Octokit } from "@octokit/rest";
 
-// Define the absolute path to the intended directory
-const baseDir = path.join(process.cwd(), "Codex");
+const octokit = new Octokit({ auth: process.env.MY_CODEX_TOKEN });
+
+const owner = "Dave8011";
+const repo = "codex-next";
+const basePath = "Codex/Codes";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed." });
-  }
+  if (req.method !== "POST")
+    return res.status(405).end("Method Not Allowed");
 
-  const { path: filePath, content } = req.body;
+  const { path, content } = req.body;
 
-  if (!filePath) {
-    return res.status(400).json({ error: "File path is required." });
-  }
+  if (!path || !content)
+    return res.status(400).json({ error: "Missing path or content" });
+
+  // Ensure filePath is safe and correctly formatted
+  const cleanPath = path.replace(/^\/+/, ""); // remove leading slashes
+  const filePath = `${basePath}/${cleanPath}`;
 
   try {
-    // Create the full, resolved path
-    const targetPath = path.resolve(path.join(baseDir, filePath));
+    // Get current SHA of the existing file
+    const { data: existing } = await octokit.repos.getContent({
+      owner,
+      repo,
+      path: filePath,
+    });
 
-    // SECURITY CHECK: Ensure the resolved path is still inside the base directory
-    if (!targetPath.startsWith(baseDir)) {
-      return res.status(400).json({ error: "Invalid path." });
-    }
+    // Update file content using GitHub API
+    const response = await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path: filePath,
+      message: `💾 Update ${filePath}`,
+      content: Buffer.from(content).toString("base64"),
+      sha: existing.sha,
+    });
 
-    await fs.writeFile(targetPath, content || "");
-    res.status(200).json({ message: "File saved." });
-  } catch (e) {
-    res.status(500).json({ error: "Failed to save file." });
+    res.status(200).json({ success: true, response });
+  } catch (err) {
+    console.error("❌ Save API error:", err.response?.data || err.message);
+    res.status(500).json({
+      error: "Failed to save file",
+      details: err.message,
+    });
   }
 }
