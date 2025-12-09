@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { detectLanguage } from "../utils/utils";
 
@@ -19,16 +20,25 @@ export default function Editor({
     setSaving,
     setSaveStatus,
     monacoRef,
-    editorRef
+    editorRef,
+    breadcrumbs // New prop
 }) {
     return (
         <section className="cf-editor">
             {fileContent ? (
-                <div className="cf-editor-card">
+                <motion.div
+                    className="cf-editor-card"
+                    initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                >
                     <div className="cf-editor-topbar">
-                        <span className="cf-filename"> {fileContent.name}
-                            <span className="cf-lang-badge"> {detectLanguage(fileContent.name)} </span>
-                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {breadcrumbs}
+                            <span className="cf-filename"> {fileContent.name}
+                                <span className="cf-lang-badge"> {detectLanguage(fileContent.name)} </span>
+                            </span>
+                        </div>
                         <div className="cf-actionbar">
                             <button className="cf-action-btn"
                                 onClick={handleFormat}
@@ -103,7 +113,7 @@ export default function Editor({
                             {saving ? "💾 Saving..." : "💾 Save"}
                         </button>
                     </div>
-                </div>
+                </motion.div>
             ) : (
                 <div className="cf-editor-empty">
                     <span className="cf-editor-empty-icon"> 🗂️ </span>

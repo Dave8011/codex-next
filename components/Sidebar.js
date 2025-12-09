@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { parentPath } from "../utils/utils";
 
 export default function Sidebar({ files, currentPath, fetchFiles, openFile, sidebarError, isMenuOpen, setIsMenuOpen }) {
@@ -15,24 +16,32 @@ export default function Sidebar({ files, currentPath, fetchFiles, openFile, side
             {sidebarError ? (
                 <div className="cf-sidebar-empty">{sidebarError}</div>
             ) : files.length > 0 ? (
-                files
-                    .filter(file => file.name !== '.gitkeep')
-                    .map(file => (
-                        <button key={`${currentPath}/${file.name}`}
-                            className={`cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}`}
-                            onClick={() => {
-                                if (file.type === "folder") {
-                                    fetchFiles([currentPath, file.name].filter(Boolean).join("/"));
-                                } else {
-                                    openFile(file.name);
-                                    setIsMenuOpen(false); // Close menu on file selection
-                                }
-                            }}
-                            aria-label={file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}`}>
-                            <span className="cf-sidebar-icon">{file.type === "folder" ? "📂" : "📄"}</span>
-                            <span className="cf-sidebar-label">{file.name}</span>
-                        </button>
-                    ))
+                <AnimatePresence>
+                    {files
+                        .filter(file => file.name !== '.gitkeep')
+                        .map((file, index) => (
+                            <motion.button
+                                key={`${currentPath}/${file.name}`}
+                                layout
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ delay: index * 0.05, duration: 0.2 }}
+                                className={`cf-sidebar-item ${file.type === "folder" ? "cf-folder" : "cf-file"}`}
+                                onClick={() => {
+                                    if (file.type === "folder") {
+                                        fetchFiles([currentPath, file.name].filter(Boolean).join("/"));
+                                    } else {
+                                        openFile(file.name);
+                                        setIsMenuOpen(false); // Close menu on file selection
+                                    }
+                                }}
+                                aria-label={file.type === "folder" ? `Open folder ${file.name}` : `Open file ${file.name}`}>
+                                <span className="cf-sidebar-icon">{file.type === "folder" ? "📂" : "📄"}</span>
+                                <span className="cf-sidebar-label">{file.name}</span>
+                            </motion.button>
+                        ))}
+                </AnimatePresence>
             ) : (
                 <div className="cf-sidebar-empty">No files</div>
             )}
