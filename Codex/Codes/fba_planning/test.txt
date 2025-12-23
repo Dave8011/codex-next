@@ -1,0 +1,4 @@
+SENDER_EMAIL="ifsscraper@gmail.com"
+SENDER_PASSWORD="wsnwpgasxdmejgeb"
+# RECIPIENT_EMAIL="shailesh@infiniteshopping.com,amit@infiniteshopping.com"
+RECIPIENT_EMAIL="shailesh@infiniteshopping.com,amit@infiniteshopping.com"
