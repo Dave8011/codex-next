@@ -1,3 +1,31 @@
 https://www.flipkart.com/hi/pre-seed-personal-lubricant-1-4-oz-1tube-9-applicators/p/itmb72bc3c7f0ad3
 
 https://www.flipkart.com/pre-seed-personal-lubricant/p/itme9365622d5536  =  BUYERSOLUTIONS
+
+
+if Herbs and Spices then 0.0% for item price <= 300 ,5.5% for item price > 300 and <= 1,000, 8.0% for item price > 1,000
+if Dried Fruits and Nuts then 0.0% for item price <= 300, 6.0% for item price > 300 and <= 500, 8.0% for item price > 500 and <= 1,000, 9.0% for item price > 1,000
+if Oils then 0.0% for item price <= 300, 1.5% for item price > 300 and <= 500, 7.5% for item price > 500 and <= 1,000, 9.0% for item price > 1,000
+if Other products then 0.0% for item price <= 300, 7.0% for item price > 300 and <= 1,000, 9.0% for item price > 1,000
+
+create formula like below
+
+=IFS(
+    AND(B$48="Herbs and Spices", B$51<=999), 0,
+    AND(B$48="Herbs and Spices", B$51>999), 8,
+    AND(B$48="Dried Fruits and Nuts", B$51<=999), 0,
+    AND(B$48="Dried Fruits and Nuts", B$51>1000), 9,
+    AND(B$48="Hampers and Gifting", B$51<=999), 0,
+    AND(B$48="Hampers and Gifting", B$51>1000), 11.5,
+    AND(B$48="Oils", B$51<=999), 0,
+    AND(B$48="Oils", B$51>1000), 9,
+    AND(B$48="Other Products", B$51<=999), 0,
+    AND(B$48="Other Products", B$51>1000), 9,
+    TRUE, ""
+)
+
+
+
+
+
+nutmeg poeder 60 grams pack of 1
